@@ -1,0 +1,303 @@
+In this unit we're going to talk about
+the overall Hack Computer architecture. And, we're going to give
+you all the information, which is needed in or,
+in order to actually go out and build it. So, here we see the overall hardware
+architecture of the Hack Computer. And, we see that we have
+something new here. We have two fancy input output devices. In particular, we have a raster display unit that enables us to
+take values from the computer, and actually display them in some sensible
+way that makes sense to humans. And, we also have a keyboard
+unit that will enable us to interact with a program that
+currently runs in the computer. Assuming of course, that this program accepts us to
+to enter some values into it. So, this is how the computer looks like,
+and as usual, it pays off to
+think about the obstruction. So from the user's perspective, or
+from the programmer's perspective, we have some sort of a black box magic,
+or a computer that enables us to write, to run on it programs within
+in Hack machine language. Now, this is not to be taken lightly
+because if, for example, we would a write a, a Java compiler that translates
+from Java to Hack machine language. Well, this computer will be
+able to run Java programs. And in fact, this is something that we do something very similar to this
+in the second part of the course. Which we will describe at
+the end of this course. So abstractly,
+we have a general purpose that can run any program that can be
+translated into Hack native code. So, this is the top down description or
+abstraction of this computer. We can also describe
+this computer bottom up. How do we build this computer? Well, it turns out, we can build this
+computer using some of the chips that we built previously in this course,
+that actually you built. And, all we have to do is put them
+together in some judicious way, and we'll get an architecture
+that enables us to realize the abstraction
+that we just described. So once again,
+this is the overall architecture. And what we'll do in this unit is focus
+on every one of these three pieces, and describe first of all, what it does. And second of all, how can actually,
+how we can actually build it. Let us start with the CPU, which is
+the centerpiece of the architecture. And, I don't want to talk too much
+about the CPU because I just spent about 20 minutes talking about
+it in the previous unit. So, I'd like to kind of gloss over what
+the CPU is supposed to do in the overall hardware architecture. Here is the interface that we've
+seen in the previous unit. And, let us explore this interface
+in the context of three possible Hack instructions. How will the CPU, or how does the CPU supposed to do
+to deal with these instructions? Well, everything is being done
+according to Hack language specification contract if you will. So, if the instruction mentions the
+pneumonic's D and A, the CPU is going to manipulate the respective D and
+A registers, which reside inside the CPU. If the instruction is an a instruction,
+well in this case the CPU is going to take the data value, the 15
+bit, so called x in this instruction. And, it is going to put
+them inside the A-register. If the right-hand side of
+the instruction mentions the pneumonic M,
+then the CPU expects to see this value or some data value in the NM
+input of the CPU interface. That is this input is supposed
+to contain the value of the currently selected
+data memory register. And, if the instruction's left
+hand side contains the numonic M as one of the destinations
+of the operation, and we see it in the last example here,
+in the third instruction in the slide. So if this is the case, then the value output should
+be stored in the main memory. In this case, we discussed it before. We have to provide three different pieces
+of data: the value that we want to store, the address, where we want to store it,
+and the control bit. So, this is done by the CPU, in the way
+that was discussed in the previous unit. Moving along,
+let's see how the CPU handles jumps. So once again, we have a typical,
+jump situation. The A register already includes,
+the address 100. We, we assume that this is the case,
+and now we have a conditional jump. D equals D minus 1. And if the result of this operation or
+the area output is zero, we want to jump. Jump where? To the address that was specified before,
+to 100. How do we do it? Well, if reset equals zero, which is normally the case
+when a program is running. Reset equals zero because the user
+doesn't touch the reset button. Then, the CPU logic uses the jump bits and the ALU output to decide whether or
+not there should be a jump. If there is a jump,
+PCs set to the value of the A-register. If there's no jump, PC is incremented, and the updated PC value is emitted
+by the PC output of the CPU. If reset equal 1,
+it means that the user wants to reset, and rerun the program from the beginning. So in this case, PC is set to zero,
+and that's the end of the story. So this, in a nutshell,
+is the contract according to which the CPU is supposed to operate in
+the overall computer architecture. Moving along,
+let us discuss the data memory. The data memory, if you recall,
+is the area in which we store all the data of the program,
+and and here is how we do it. Well, if we think about this data
+memory from a programmers perspective, it's convenient to think about it in
+terms of three different segments. Or logical segments, if you will. Addresses 0 up to 16k are used to store the data that the program
+generates and manipulates. The next 8k of the memory are used
+to store the screen memory map. If you want to draw something on,
+on the screen, you have to manipulate bits
+in this memory segment. And finally, the last register in
+the memory is used to reflect or to tell us which key is currently
+being pressed on the keyboard. Now once again,
+this is an obstruction, right, this is how the programmer expects
+this this memory to, to operate. And now, let's us turn to discuss
+how we actually make it happen. Well, we do it by building the memory from
+three different sub chips, if you will. Or chip parts,
+as we call it in our HDL jargon. So, the first segment is
+just a standard RAM chip. The second segment is a, a,
+special chip called screen. And, the last segment is yet another
+special chip, which we call keyboard. And in the next few minutes, I want to say a few words about
+every one of these chip parts. So, let us start with the RAM. The RAM is trivial. We've built it in in
+project three I believe. One of the chips that you
+built was called RAM 16. So we just plug it in, and this gives
+us the the necessary Implementation. And notice, that the inputs and outputs of
+the RAM 16 are identical to the inputs and outputs of the overall, memory chip. So whoever builds this chip has to make
+sure to take the outside, inputs and outputs, so, so to speak, and connect
+them, make the connections that will funnel these values into the inner chip
+box, into the RAM, RAM 16K, chip box. Moving along, the next segment
+in the memory if you recall, is called screen, and before we talk
+about the implementation of this, memory segment, let us remind ourself,
+what we mean when we say memory map. Now we discussed it at length when
+we talked about hack programming. So I'm not going to repeat it,
+I will just gloss over the main ideas. So, we assume that we have, a display unit consisting of so
+many rows and so many columns. It's a black and white, display device. We assume that we have an area in
+the memory that controls these units so that when we chain the,
+when we change bytes in this, special, memora, memory, area, the architecture
+refreshes the screen accordingly. And this refresh happens several times. Each, each second. Now there is also a mapping that tells
+us how to relate, organize with pixels, on the display unit with specific
+bits in the, in the memory map. And, once again we discussed this before,
+you are more then welcome to stop the video and,
+make sure that this mapping makes sense. And this is how the memory map is, specified and, designed in
+the context of a Hack computer. So how do we implement it? Well, we use a special
+built-in screen chip that knows how to automatically quote unquote
+refresh a connected display unit. Now I want you to notice
+that in the most part there's nothing special about this chip. It's just a regular RAM chip. However, it has this nice side effect of
+refreshing, a connected, display unit. So, this is the chip that we are going to
+use in order to implement, the memory, sorry, the,
+the display effect of our computer. Moving along, what about the keyboard? Well, the keyboard is implemented
+with a single register, a 16 bit register, which we call Keyboard. And, this register is connected
+to a standard keyboard, similar to the one that
+you are currently using. And, we discussed it, once again
+we discussed it in, in week four. How do we handle inputs? Well, if we don't touch the keyboard,
+the keyboard, register is going to emit the value zero, oh, and
+it's going to contain the value zero. If we take our finger and
+touch or press one of these keys, the scan code of this key is going to
+be stored inside the keyboard register. So for example, if we press k,
+it turns out that the scan code of k is 107 and 107, 107 Is going
+to appear in binary in this register. So as long as our finger is down,
+we'll see, 110, 1011. Once we take the finger,
+away, it will show 0. Likewise, if we, click something else,
+the number four, turns out that the scan code of four is 52, we see
+this value if we click space we see 33. If we click up arrow
+we see something else. So that's the deal,
+that's how the keyboard operates and what we see in the keyboard is called, or
+is usually called, a keyboard memory map. How do we implement it? Well once again,
+we use a special chip which, is connected to the keyboard and
+as I said before I want to repeat it. Now there is nothing
+special about this chip. It's a regular register It
+has a nice side effect. And the side effect is it always reflects
+what the user is pressing on the keyboard. And most of the time it's zero, because
+most of the time the keyboard is not used. All right, how do we, read the keyboard? Well, we talked about it in week four. To read the keyboard, we simply probe the
+output of the keyboard register, right? We see that keyboard register has an
+external state that we don't see in this diagram here but
+it also has an output, pin just like any regular register so we can
+read what comes out from the keyboard and from this information we know,
+which key is currently pressed. But if we use the keyboard in
+the overall context of Hack memory, we have to probe the contents
+of memory register 24 or 24,576 because this happens to be
+the address, of the keyboard, interface, or the keyboard, memory map with in the
+overall output space of the memory unit. Okay, so, we know how to handle, how to, handle and, build roughly the CPU. We know how to implement the, memory. We are going back to,
+the overall computer architecture. And, I've added,
+something little to this architecture, and this is the, reset button. I want to remind you that if we actually
+set out to build this computer, we're going to have a black box with
+a reset button, and this reset button corresponds in my diagram to this, orange,
+reset, oval that you see in front of you. And we're going to refer to this reset,
+in the remaining slides in this unit. Okay. So with that in mind,
+the next thing that we want to, implement is the instruction memory
+of the Hack, computer system, and we implement this instruction memory
+using, a chip which we call ROM 32K. Let us assume that we have this
+computer sitting on the table, and next to this computer, we have a program
+written in the Hack, machine language. In order to run this program, the first that we have to do is somehow
+load it into the computer, right? So, we load it into the computer. And in particular,
+we load it into the ROM 32K chip. We press the reset button
+that we just discussed, and the program will start running. This is the obstruction
+that we want to implement. Now, I am sure that many of you
+are scratching your head and saying, well how do you actually get a program
+which resides on a piece of paper or in some text file and
+put it inside the computer. Well it turns out that there
+are several ways to do it. One of them is to use
+plug-and-play ROM chips. So, we burn our code, the machine
+instructions code into a RAM chip. We take this RAM chip, we plug it into
+the computer, we press the Reset button, and the computer will start executing
+this, this particular program. If we want to run another program,
+we take this chip out, and we plug in another ROM chip that
+has another program burned into it. And this is actually quite similar to
+the way some game consoles operate. You have some cartridges
+with games that you plug in. You play a certain game. You want to play another game, you,
+you plugin another cartridge and so on. So that's one way to, to implement it. Another way to implement it is
+using hardware simulation and that's what we what we are going to do in,
+in this course. We use a hardware simulator. If we use a hardware simulator, we have
+the freedom to do many different things. And indeed, we are going to use
+a built-in ROM chip that actually, once again, there's nothing special
+about it because it operations very similarly to a RAM that
+you built-in in, project three. But it has a nice side
+effect that it allows you, using simulation to load programs into it residing programs that are residing
+on regular text files. And let me take a minute and and illustrate how this is actually being
+done in our hardware simulator. Welcome to the Hack CPU Emulator. The CPU emulator is a Java program
+that gives you a visual rendition of what is happening inside the Hack
+computer when a program is being executed. And indeed, if you look around, you will see all sorts of familiar
+elements from the heck platform. On the left-hand side,
+we see the instruction memory and right next to it, the data memory. And below, we see the current
+value of the A-register here and the current value of
+the D-register there and there's also a visual rendition
+of the ALU operation. Another control of interest is this one, which shows you the current value
+of the so-called program counter. The program counter is a register
+that contains the address of the instruction that will be
+executed next in the program, which is currently loaded
+into the instruction memory. Now right now, we have no program
+in the instruction memory, so lets go ahead and load one. So, I click this control here and I have
+this folder called program examples. So, I'm going to select it. And inside program examples,
+there are all sorts of Hack programs. I'm going to select the first one,
+add2and click the Load ROM button. And I see that now the instruction
+memory contains what seems to be a sequence of Hack machine instructions,
+written in assembly. [COUGH] I'm sorry,
+written in assembly language. Now, if I want, I can look at these
+instructions in binary format. And yet as we argued before, it's much
+easier to think about the program and display it and understand it when it's
+visualized using these assembly comments. Now, according to the rules of the game or
+more precisely, according to the rules of this program. In order to run it, we first have to
+enter some numbers into the the RAM. So let's see. I'm going to enter, let's say,
+12 here and 7 there. These are completely arbitrary values. And hopefully, the program will end
+up summing up these two values and putting the result in in RAM 2. So to check that this
+is actually the case, I can begin running the program and
+I do it by using this visual metaphor here of
+an advance of sort VCR control. So let's, let's advance and
+execute the first instruction. Well, nothing dramatic happened let
+us execute the next instruction and I see that the D-register became 12. So we managed to load the contents
+of RAM 0 into the D-register. Moving along, I now execute the next
+instruction, which was at one. And indeed, I see that the value
+of the A-register is now one. Let's do the first instruction
+D equals D plus M. And indeed, we see that the current value
+of D became 19, which is 12 plus 7. And finally, we execute at two,
+which selects this register here in In the RAM register
+number two, I see it here as well. And finally, M equals D. And indeed, we see that RAM 2 became 19. So, lo and behold, it looks like
+the program is actually working. Now notice that the program
+counter is six, so if I keep on executing commands
+I will continue to execute whatever resides here in
+memory in all these addresses. Which is a little bit worrisome and I will get back to talk about
+it a little bit later on. All right. Now let us suppose that we want to
+rerun this program from scratch. So what we can do is rewind the program,
+so to speak. Now there's no rewind in, in computers but this visual metaphor here indicates that
+the program counter has been set to zero. And this actually causes
+the computer to to set itself to a position in which it can start
+executing this program again. So we can, you know,
+try some other values here. Let's, let's enter just the first
+value is now minus five and I'm going to rewind once again. And now, I'm going to fast forward,
+which actually means, just, you know, let the whole program execute
+automatically, so to speak. So we see that the program is indeed
+executing without any help from us and let us pause it for a little while and we see that we got the right answer,
+which is 2 minus 5 plus 7 is 2. And if we continue to execute
+it the computer will kind of, spin its wheels, so to speak and
+will execute all these null instructions. And indeed, we see that nothing's
+actually happening, but the program's kind of out of control and
+we have to think about way to resolve it. But for now, what is more interesting
+is the fact that we learned how to execute a program and how to
+inspect the various controls here and convince ourself that the program is
+actually doing what it's supposed to do. So now that we understand how
+the ROM comes to play in simulation, let's go back to the general
+specification of the ROM. It's almost a regular memory chip. It has an address coming in. It has some output coming out. It's a ROM device, read-only, so we don't have any machinery
+that enables writing into it. And if you recall,
+the output of of the ROM is always the contents of the register that
+is selected by the address input. So, if I enter 17 into the address input, what will come out is the contents
+of register number 17. So, it makes a lot of sense to take this
+ROM and connect it to the program counter, because the program counter always admits
+the address of the next instruction. So, if we feed this address into the ROM, we are guaranteed that
+the ROM will always admit. A 16-bit value that we can treat
+as the current instruction. And if the PC is doing what it's
+supposed to do, then in every cycle, the PC will provide
+The address of the next, instruction that we want to, execute. And this is after taking into
+consideration all the go tos and the conditional go tos and, and so on. And what will come out from the rung
+is always the current instruction that we want to execute. As if by magic. Of course we know that
+there's nothing magical here, because we're going to build everything,
+all of this ourselves. So, having said that we can
+now finally rap up this, discussion and talk about how we build
+the overall computer architecture. Okay, so we start with the CPU and
+as was just discussed, we connect to it the instruction
+memory which we call ROM. And we connect it in exactly the same
+manner that we just discussed. So, the instruction input of
+the CPU is taken from the output of the instruction memory, and so we have
+the current instruction to operate on and in the process of executing this
+instruction we are going to compute the address of the next instruction
+that has to be fetched and this address is going to be
+emitted by the program counter. And it goes all the way into
+the address of the instruction unit, of the instruction memory unit, and,
+this unit in turn will then emit the next instruction that has to
+be executed in the next cycle. Now, the CPU in this, sub diagram
+here is kind of spinning its wheels. And nothing, nothing is actually
+being done with its outputs. So in order to do something useful with
+the outputs of the CPU, we connect them to the memory unit, according to the
+contract that we described several times. What we want to write, where we want
+to write it, and the, load bit. And finally,
+we take the output of the memory, and we connect it back into, the CPU,
+because many instructions, that we want to operate on the memory and
+on not on the right into it. And this is all. This is our computer architecture. All we have to add now is,
+the overall interface, of the architecture, and
+the, output and input units. And we see that the only thing that the
+user, of this computer sees when he works with this computer is the display unit,
+the keyboard and the reset button. And this, once again, wraps up, everything that we want to say about,
+building this, computer architecture. And when I look at this architecture and reflect back on everything that, we did so far I'm reminded by this quote about
+what it means to be beautiful. We ascribe beauty to that which is simple, which has no superfluous spots,
+which exactly answers its end, which stands related to all things,
+which is the mean of many extremes. This was said, 120 years ago by,
+Ralph Waldo Emerson. I hope that you too agree with me that, the Hack computer is beautiful
+according to this, standard. And one reason why it is so aesthetic
+is because it's incredibly simple. You know all you have to do in
+order to build this, computer here, provided you built these three chips, is write something like three lines of
+HDL code which is quite remarkable. And so this exactly is what,
+what we're going to do in the next unit. Now that we described the overall
+architecture, we will show you how to actually build these, three chips,
+put them together, and have a Hack computer that you can actually use to run
+every program that comes to your mind.

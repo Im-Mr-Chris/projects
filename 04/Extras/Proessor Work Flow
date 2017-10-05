@@ -1,0 +1,77 @@
+
+CPU Flow Process
+
+
+Seven main parts: 
+
+1. fetch current instruction from Instruction Memory
+2. access the Register File and execute comparisons for branch instructions
+3. ALU operations
+4. Data Memory load and store
+5. write back to the register file
+6. next instruction address calculation
+7. control logic.
+
+
+
+
+
+ADD (R0, R1, R2) would be executed as follows.
+
+1. A 32-bit instruction is fetched from the Instruction Memory
+2. R0 and R1 are accessed, and the values of those registers are directed into the ALU
+3. The ALU adds the values of R0 and R1
+4. Since this is not a LOAD (jump) or STORE (dest) instruction, the Data Memory is not accessed
+5. The output value of the ALU (M) is written to R2
+6. Since this is not an branch (jump) instruction, the instruction address is incremented by four.
+
+For arithmetic operations that involve constants, the constant is embedded in the instruction memory output, and the constant is bypassed to the ALU output.
+
+
+
+Load
+LD (R0, 0x4, R2) would be executed in the RISC processor as follows.
+1) A 32-bit instruction is fetched from the Instruction Memory
+2) Register 0 is accessed in the Register File, and the value is driven to the ALU
+3) The ALU calculates the Data Memory address by adding the value of Register 0 and the constant 0x4
+4) The Data Memory is accessed and the data is output to the wdsel mux
+5) The contents of Data Memory are loaded into Register 2
+6) Since this is not an branch instruction, the instruction address is incremented by four.
+
+
+Store
+ST (R0, 0x1, R2) would be executed in the RISC processor as follows.
+1) A 32-bit instruction is fetched from the Instruction Memory
+2) Register 0 is accessed in the register file, and the value is driven to Write Data (WD) port of Data Memory. Also, the value of Register 2 is driven to the ALU.
+3) The ALU calculates the memory address by adding the value of Register 2 and the constant 0x1
+4) The value of Register 0 is stored into Data Memory.
+5) Nothing is written to the register file
+6) Since this is not an branch instruction, the instruction address is incremented by four.
+
+
+
+
+Branch
+BEQ (R0, btwo, R1) would be executed in the RISC processor as follows.
+1) A 32-bit instruction is fetched from the Instruction Memory
+2) Register 0 is accessed in the register file, and a comparison is done to determine if the value of Register 0 is equal to zero (Z = 1) or nonzero (Z = 0)
+3) If Z = 1, the ALU bypasses the instruction address to its output.
+4) Branch instructions do not access data memory.
+5) If Z = 1, then the ALU bypass is stored into Register 1.
+6) If Z = 1, the address “btwo” will be loaded ino the PC register, otherwise the instruction address is incremented by four
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

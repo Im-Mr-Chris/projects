@@ -1,0 +1,129 @@
+Last week we described what the computer
+that we're building in this course is supposed to do. This week we get to the more
+difficult task of actually doing it. Implementing a computer that can actually
+do everything that we promised previously. So let us recall the kinds of things that
+we said that our computer is going to do. The most amazing thing was that
+one computer is able to run any kind of program, any kind of software
+that it is supposed to be able to get instruction from the software and
+then just execute it. So we get a single machine that is
+very flexible and can do everything. That idea was called the universal Turing
+machine, in the theoretical world. And the architecture that actually
+implements it is called the von Neumann architecture. And this is what we're
+going to build today. So, last week we were very happy
+to get such an amazing device to actually do whatever we tell it to do. This week we're going to
+have to pay the price, and actually see how can you do such
+an amazingly flexible thing. So we're,
+we already saw the general architecture of how this can be implemented. We are going to have a large piece
+of memory that's going to be used for two things. First of all to store all the kind
+of the data that we're going to use in the computation but more interestingly
+the memory will hold the program a sequence of instructions that
+are going to be executed one by one. Beyond that, we're going to have the
+central processing unit, which actually carries out these instructions and
+runs them and controls everything. So let us now look more closely
+how this actually happens, how the central processing unit is built,
+and how does all the controls back and forth works, and this is what we're going
+to describe in a general way this unit, and later we'll actually talk much more
+specifically about the computers that we're building for this project. So generally speaking, our CPU is going to be composed of two
+main ingredients, two main components. One of them is what you often
+call the arithmetic logic unit. It's actually a piece of hardware that
+actually is able to add numbers and subtract numbers maybe do
+logical operations and so on. The second element is there are going to
+be a bunch of registers, a bunch of places where we can store data data that we're
+going to use for the rest of computation. So this is going to be basically
+the core of the elements that the CPU is built out of. The memory itself,
+as we said, has two parts, the part that stores the program and
+the part that stores the data. To try to understand how all
+these things work together, it's best to actually consider
+it as a flow of data, what kind of information needs to pass
+within the computers from side to side. And this is what we're going
+to actually now try to do. Try to describe the various
+pieces of information that go from side to side in this
+computer and how we control them. So basically there are,
+I would say three types of information that's usually passed around the system,
+and one of them is the data. When we have a number
+that needs to be added, of course the number needs to be moved
+from some, from one place to another, from the data in memory to the registers,
+to the actual other systematic logic unit that's going
+to do something with them, and back. The second type of information
+that we need to control is what's called addresses. What instruction are we
+actually executing now? What piece of data within the memory
+do we need to access now? These are in addresses. And, of course, there is going to be a, there is going to be a big bunch of
+wires that actually do all the control. That actually tell each part of the system
+what to do at this particular point and this is called the control. Sometimes all these three pieces of the,
+each one of these pieces of information is actually going to be implemented by wires,
+by a set of wires sometimes called a bus. So we're going to have in a typical sys,
+computer, we're going to have a data bus, an address bus and sometimes the control
+bit are called the control bus, sometimes they're just
+called control wires. So let's look at the different pieces
+that we have in our computer and see exactly what kind of
+information they get and emit. Let us start with arithmetic logic unit. This is a conceptually, the simplest and
+clearest part of the CPU of our computer. It basically needs to be
+able to accept numbers. And add them, subtract them. Do some logical operations on them. So it's very simple. We need,
+simply need to have some information from the databus connect into the ALU. And then information. And then feeds the output
+value back into the databus. That's going to be a, and from there,
+of course, it's going to have to go to other places that also connect to the
+databus, like the memory or the registers. There is one other piece of infor,
+plus other type of pieces of information that ALB would, ALU will need to be
+connected to, this is the control bus. On one hand, of course the ALU needs to know what
+kind of operation it does every time. So it has to reget information
+from the control bus, specifying the type of
+operation that it does. And on the other hand, according to
+the results of the arithmetic or logical operations that it does. It's going to be able to, have to be able to tell the other
+parts of the system what to do. For example, if it sees that a certain
+number is greater then 0, that can control the jump in the next instruction,
+what the next instruction will be. This control will happen
+through the control bits. So we're going to also have to get,
+take some information from the ALU and feed it back to control
+the rest of the system. Let us consider now with the registers. The registers conceptually
+are very simple. Again, we store intermediate
+results in the registers. So we're going to be,
+have to be able to take data in, from the data bust into the registers and then also take data's from the register
+then feeds them back into the data bus. And of course where would they go
+from the data bus to other parts of the system such, as the ALU. So this is the first thing that
+of course we will have to connect all the registers to the data bus. The second piece of information is,
+sometimes, as we've discussed previously, some
+registers are used to specify addresses. The way we actually achieve
+indirect addressing into a RAM or jump into a ROM address, the way we
+do it is usually we put numbers, addresses into a register and then that
+specifies where we want to access. So we're going to also have to
+have registers control a connected to the address bus which controls
+again the memories, that, which actually then feeds into the memory. So that's a second type of
+information we'll need to have. We will [INAUDIBLE] have some
+registers that are address registers, either exclusively or
+both address and data registers. And these will need to
+feed into the address bus. The last piece of information, the last piece that we need
+to talk about is a memory. So on one hand the memory needs,
+we always need to specify what address of the memory are we
+going to be working with. And that is specified of course by the
+address method, that's the whole point. And of course once we actually
+work with a certain address, we're going to be need
+to be able to read it or write into it, get information from it or
+put information into it. So of course the data, the input and the output of the memory unit will have
+to be connected to the, to the data bus. Let us look slightly more clo,
+closer inside. There are two pieces to the memory,
+there is a data memory and there is a program memory. Let's a lit, talk a little
+bit about each part of these. Looking at the data memory, eh, that,
+what, it's going to need to get a, an address of a data piece that
+needs to be operated upon. And of course, then very simply,
+we need to write and read into it. Looking at the other part which is the
+program memory, where also we, if, we're going to need to put the address of the
+next program instruction into the, into the program memory because this is where
+we're taking our program instructions. We need to be able to put an address
+into the program memory address, and then get the instructions from there. Now the instructions that we get from the
+program memory, both may have data in it. For example, it may have numbers
+that we need to add, and so on. But, also it's an important thing,
+is the program actually tells, the program instruction tells
+the rest of the system what to do. So we need to be able to actually take
+information from the next instruction, from the data output
+of the program memory. And feed it into the control bus. So that's another important piece
+of information that we need to do, another important connection that we
+need to have inside the computer. So, so far we talked about all
+the different pieces inside the, all the different components that
+a computer is going to be composed of and how they're connected to
+each other versus in the, in the, in the sense of which
+information moves from where to where. What we're going to do in the next unit,
+is actually look more closely at the innermost loop, the basic thing
+that our hardware is supposed to do, that is take an instruction from
+the memory, from the program memory, and actually execute it using the rest
+of the system as appropriate. That is called the fetch-execute cycle,
+and will be the content of the next unit.

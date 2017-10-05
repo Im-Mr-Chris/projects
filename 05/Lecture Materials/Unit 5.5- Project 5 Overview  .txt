@@ -1,0 +1,129 @@
+So, throughout this week, we talked
+about the computer architecture and how the various shapes are synthesized
+into a single overall architecture and in project five you actually have
+to build this architecture and test it using our project materials. So, the purpose of this unit is
+to give you all sorts of tips and advice on how to do it. Well, before we get started,
+I want to begin with some overall, broad overview of what we have done so
+far. Or what we are doing in
+the course in general. Well, we are building a computer, and the computer is implemented
+as a very high level chip. And this chip makes use of two main
+components, CPU and a memory unit. The memory, in turn, consists of several
+RAM units which are pieced together, and every one of these RAM units is
+basically a collection of many registers. The CPU also includes several registers,
+if you recall, the D register, the A register. It also includes a program counter, and, of course,
+the ALU that we built in project two. We can continue to resolve these chip parts into simpler or
+more basic chip parts. For example, the program counter
+makes use of a register and an adder, and the ALU also makes use of
+another instance of an adder chip. And, of course, all these chips at
+the end of the story, are based on elementary logic gates, those that you
+built in the first week of the course. And also, other chips, higher level chips, make direct use every once in a while,
+of these lower level gates. Now if we look at what I've
+just described, bottom up, then in project one,
+we built the elementary logic gates. In project two, we built the family
+of adders that led up to the ALU. In project three, we built a family of
+registers that ended up with RAM units. And finally, in this project, we are going
+to take the fruits of all this hard work, and put it together into
+a complete computer system. So, basically, we have to implement
+the CPU, the memory unit, and then we have to implement the
+syntheses of these two high level chips, into a complete working
+general purpose computer. So, that's what we'll do in project five. So, here is the abstraction
+of the Hack computer. And here is also, the implementation
+that we discussed in the previous units. And we see that the architecture
+is based on a CPU, a data memory unit, and an instruction
+memory unit, which we called, ROM. So, let us begin with the CPU. Once again, here is the CPU,
+in in abstract terms. We see we see here, the API, or
+the input and output units of the CPU. And if we delve into the implementation,
+get this diagram, that we discussed earlier in the course. And here are some tips on how to
+build this relatively complex chip. Well, first of all, if you look carefully,
+you will see that all the chip parts here are chips that we've built
+before in previous projects. So, it's just a matter of taking these
+chips off the shelf, so to speak, and piecing them together
+in some clever way. So how do you do it? Well, another inspection of this diagram, reveals that we have all these C
+control bits, that you see here. And, most of these control bits
+come from the current instruction. So here's, for example,
+a C instruction that consists, if you recall, of several fields. And I used color which is, obviously is,
+is meaningless for the computer but, it helps me communicate with you so,
+we see an instruction coming in. And your job as,
+the designer of this chip, is to unpack these control bits and
+send them, or route them, using HDL,
+to their correct destinations in the various chip parts that
+make the overall architecture. So, if you do this carefully,
+if you figure out which control bit has to go where, you will basically glue all
+these parts together in a logical way and and at the end of this synthesis,
+you will get an overall CPU architecture. Now actually I, I really glossed over quite a few details because it's not just
+a matter of taking these control date, bits and
+sending them to some destinations. You may have to add some logic
+that does some processing of some of these control bits,
+in order to achieve the desired effect. And also bear in mind, that there are also some control
+bits that come out of the ALU. If you look at the diagram,
+I actually forgot to circle them as well. These control bits also play an important
+role in in the overall architecture. And once again, you have to write some
+HDL logic that takes these control bits, combines them with some other information
+that comes from the instruction, and and piece them together in a way that
+achieves the desired effect. Now, we have intentionally, we haven't given you exact
+instructions on how to do it. And intentionally, we just use this
+catch-all C label, because we, we want you to think about it and figure out yourself
+how to put all these things together. Once you do it, you will achieve
+the overall architecture of the CPU. Here is also the stub file
+that we are giving you. The stub file contains,
+you know the documentation of the CPU, the names of the input and
+output units, and then obviously you have to provide
+the the missing implementation. All right, so, moving along,
+we have resolved the CPU, and the next thing that I want to
+discuss is the memory unit. The data memory unit which is the,
+the unit that contains the, the running program and the data that
+the program generates, the variables. And in a higher level language objects
+arrays, and so on and so forth. All right, so
+this is the memory abstraction. It's a single address
+space that has an in, an address input, and an out, output. And it also has this nice side
+effect of refreshing the screen and probing what the user is
+is doing with the keyboard. Now the overall address
+space of of the Hack memory consists of three logical segments. Now there's no physical separation, but
+there's a logical separation, if you will. So the first 16K of
+the memory are dedicated to the running program and, and
+the data that it generates. The next 8K of the memory
+are dedicated to a screen memory map, and the last register in the memory is
+represents the keyboard memory map. So, how do we build it? Well, we have to realize this abstraction
+using chips that we already built before. And here is some high level
+diagram of this, architecture. So we have three basic chips. We have the RAM chip that
+we built in project three. Then we have a built-in screen chip which
+essentially is just a regular memory chip, so it's not really terribly
+interesting to implement it, if you implemented the RAM before. But, it has the very nice side effect
+of refreshing the physical screen. And finally, we have a humble
+register called, keyboard which holds the currently pressed, the scan
+code of the currently pressed key. So, you have to write HDL code that takes an incoming address,
+whatever this address may, be and funnel this address to the right chip part
+within the the overall address space. So if the address is below 16k,
+well, there's nothing to do with it. You simply retrieve the right
+register from the RAM chip part. But if the address is between 16,384, and 24,575, then you have to do something
+to take this address and, and route it to the right address
+in the screen, memory chip. And finally, if the address is 24,576, then you want to route it to
+the to the keyboard memory map. So, that's basically what your HDL
+code has to do, and if you will do it, you will achieve this glue that
+holds together these chip parts and delivers the overall
+functionality of the data memory. All right, so we've resolved the CPU and
+the memory, and the only thing that remains to do is
+to figure out how to implement the ROM. Well the ROM is really
+a simpler version of the RAM. It's, it's just, it's, it's a RAM chip and
+yet, it's, it's a read-only device. So, it's actually easier
+to build than a RAM chip. And therefore, we decided not to bother
+with with asking you to build it, and we supply it as a built-in chip. We didn't do it only for that reason. We also, we, we, we supplied built-in
+version of the ROM because we also endode, endowed this built-in chip
+with the ability to load the program within the the hardware simulator. So it's very convenient that we
+have this built-in chip, and all you have to do is take it and
+plug it into the overall architecture. So this is probably the easiest
+thing to do in this project. So, that's it. We we built all the the three components that make up the architecture and
+the only thing that remains is to actually effect in HDL the very diagram
+that you see here in front of you. So, we have to write a few HDL statements
+that connect the CPU to the memory, and the ROM 32K, in the same way
+that you see here in the diagram. How do we do it? Well, we start with a, a stub file that
+gives you the API of the computer, and then you write a few lines
+of HDL code that basically implement this diagram in HDL. In order to do this project, as usual,
+you have to go to the website. Read the project page that gives
+you all sorts of the documentation about the files that
+you are going to need. All these files are already
+available on your computer, as part of the NAND to Tetris folder. So you're all set and you have
+everything you need in order to finally complete the computer architecture. There are a few more resources, as usual
+that you are, you're welcome to use. And, that's it. If you do that you will end
+up having a running computer. And and this will be the end of
+the hardware part of this course. The next unit as usual, is Perspectives.

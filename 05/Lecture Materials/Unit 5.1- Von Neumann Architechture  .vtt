@@ -1,0 +1,765 @@
+WEBVTT
+
+1
+00:00:04.585 --> 00:00:08.233
+Last week we described what the computer
+that we're building in this course
+
+2
+00:00:08.233 --> 00:00:09.830
+is supposed to do.
+
+3
+00:00:09.830 --> 00:00:13.580
+This week we get to the more
+difficult task of actually doing it.
+
+4
+00:00:13.580 --> 00:00:18.580
+Implementing a computer that can actually
+do everything that we promised previously.
+
+5
+00:00:18.580 --> 00:00:22.480
+So let us recall the kinds of things that
+we said that our computer is going to do.
+
+6
+00:00:22.480 --> 00:00:26.560
+The most amazing thing was that
+one computer is able to run any
+
+7
+00:00:26.560 --> 00:00:31.140
+kind of program, any kind of software
+that it is supposed to be able to get
+
+8
+00:00:31.140 --> 00:00:34.440
+instruction from the software and
+then just execute it.
+
+9
+00:00:34.440 --> 00:00:38.750
+So we get a single machine that is
+very flexible and can do everything.
+
+10
+00:00:38.750 --> 00:00:43.640
+That idea was called the universal Turing
+machine, in the theoretical world.
+
+11
+00:00:43.640 --> 00:00:47.490
+And the architecture that actually
+implements it is called the von Neumann
+
+12
+00:00:47.490 --> 00:00:48.480
+architecture.
+
+13
+00:00:48.480 --> 00:00:50.826
+And this is what we're
+going to build today.
+
+14
+00:00:50.826 --> 00:00:54.790
+So, last week we were very happy
+to get such an amazing device
+
+15
+00:00:54.790 --> 00:00:57.026
+to actually do whatever we tell it to do.
+
+16
+00:00:57.026 --> 00:00:58.860
+This week we're going to
+have to pay the price, and
+
+17
+00:00:58.860 --> 00:01:02.520
+actually see how can you do such
+an amazingly flexible thing.
+
+18
+00:01:02.520 --> 00:01:05.490
+So we're,
+we already saw the general architecture
+
+19
+00:01:05.490 --> 00:01:06.770
+of how this can be implemented.
+
+20
+00:01:06.770 --> 00:01:10.090
+We are going to have a large piece
+of memory that's going to be used
+
+21
+00:01:10.090 --> 00:01:11.170
+for two things.
+
+22
+00:01:11.170 --> 00:01:14.060
+First of all to store all the kind
+of the data that we're going to use
+
+23
+00:01:14.060 --> 00:01:18.550
+in the computation but more interestingly
+the memory will hold the program
+
+24
+00:01:18.550 --> 00:01:21.590
+a sequence of instructions that
+are going to be executed one by one.
+
+25
+00:01:22.600 --> 00:01:26.220
+Beyond that, we're going to have the
+central processing unit, which actually
+
+26
+00:01:26.220 --> 00:01:29.850
+carries out these instructions and
+runs them and controls everything.
+
+27
+00:01:30.900 --> 00:01:34.410
+So let us now look more closely
+how this actually happens,
+
+28
+00:01:34.410 --> 00:01:38.320
+how the central processing unit is built,
+and how does all the controls back and
+
+29
+00:01:38.320 --> 00:01:42.830
+forth works, and this is what we're going
+to describe in a general way this unit,
+
+30
+00:01:42.830 --> 00:01:46.350
+and later we'll actually talk much more
+specifically about the computers that
+
+31
+00:01:46.350 --> 00:01:48.250
+we're building for this project.
+
+32
+00:01:49.990 --> 00:01:51.350
+So generally speaking,
+
+33
+00:01:52.410 --> 00:01:57.910
+our CPU is going to be composed of two
+main ingredients, two main components.
+
+34
+00:01:57.910 --> 00:02:01.425
+One of them is what you often
+call the arithmetic logic unit.
+
+35
+00:02:01.425 --> 00:02:04.760
+It's actually a piece of hardware that
+actually is able to add numbers and
+
+36
+00:02:04.760 --> 00:02:07.360
+subtract numbers maybe do
+logical operations and so on.
+
+37
+00:02:08.480 --> 00:02:13.650
+The second element is there are going to
+be a bunch of registers, a bunch of places
+
+38
+00:02:13.650 --> 00:02:19.370
+where we can store data data that we're
+going to use for the rest of computation.
+
+39
+00:02:19.370 --> 00:02:23.210
+So this is going to be basically
+the core of the elements
+
+40
+00:02:23.210 --> 00:02:24.130
+that the CPU is built out of.
+
+41
+00:02:25.380 --> 00:02:27.980
+The memory itself,
+as we said, has two parts,
+
+42
+00:02:27.980 --> 00:02:31.690
+the part that stores the program and
+the part that stores the data.
+
+43
+00:02:31.690 --> 00:02:34.880
+To try to understand how all
+these things work together,
+
+44
+00:02:34.880 --> 00:02:37.120
+it's best to actually consider
+it as a flow of data,
+
+45
+00:02:37.120 --> 00:02:41.460
+what kind of information needs to pass
+within the computers from side to side.
+
+46
+00:02:41.460 --> 00:02:43.840
+And this is what we're going
+to actually now try to do.
+
+47
+00:02:43.840 --> 00:02:46.390
+Try to describe the various
+pieces of information
+
+48
+00:02:46.390 --> 00:02:50.590
+that go from side to side in this
+computer and how we control them.
+
+49
+00:02:52.650 --> 00:02:56.450
+So basically there are,
+I would say three types of information
+
+50
+00:02:56.450 --> 00:03:00.400
+that's usually passed around the system,
+and one of them is the data.
+
+51
+00:03:00.400 --> 00:03:02.400
+When we have a number
+that needs to be added,
+
+52
+00:03:02.400 --> 00:03:05.880
+of course the number needs to be moved
+from some, from one place to another,
+
+53
+00:03:05.880 --> 00:03:10.190
+from the data in memory to the registers,
+to the actual other
+
+54
+00:03:10.190 --> 00:03:14.000
+systematic logic unit that's going
+to do something with them, and back.
+
+55
+00:03:14.000 --> 00:03:16.630
+The second type of information
+that we need to control is
+
+56
+00:03:16.630 --> 00:03:18.290
+what's called addresses.
+
+57
+00:03:18.290 --> 00:03:21.170
+What instruction are we
+actually executing now?
+
+58
+00:03:21.170 --> 00:03:24.680
+What piece of data within the memory
+do we need to access now?
+
+59
+00:03:24.680 --> 00:03:26.480
+These are in addresses.
+
+60
+00:03:26.480 --> 00:03:27.980
+And, of course, there is going to be a,
+
+61
+00:03:27.980 --> 00:03:32.700
+there is going to be a big bunch of
+wires that actually do all the control.
+
+62
+00:03:32.700 --> 00:03:36.590
+That actually tell each part of the system
+what to do at this particular point and
+
+63
+00:03:36.590 --> 00:03:38.020
+this is called the control.
+
+64
+00:03:38.020 --> 00:03:43.030
+Sometimes all these three pieces of the,
+each one of these pieces of information is
+
+65
+00:03:43.030 --> 00:03:48.050
+actually going to be implemented by wires,
+by a set of wires sometimes called a bus.
+
+66
+00:03:48.050 --> 00:03:51.776
+So we're going to have in a typical sys,
+computer, we're going to have a data bus,
+
+67
+00:03:51.776 --> 00:03:55.070
+an address bus and sometimes the control
+bit are called the control bus,
+
+68
+00:03:55.070 --> 00:03:57.720
+sometimes they're just
+called control wires.
+
+69
+00:03:57.720 --> 00:04:00.740
+So let's look at the different pieces
+that we have in our computer and
+
+70
+00:04:00.740 --> 00:04:04.960
+see exactly what kind of
+information they get and emit.
+
+71
+00:04:04.960 --> 00:04:06.488
+Let us start with arithmetic logic unit.
+
+72
+00:04:06.488 --> 00:04:11.410
+This is a conceptually, the simplest and
+clearest part of the CPU of our computer.
+
+73
+00:04:11.410 --> 00:04:13.870
+It basically needs to be
+able to accept numbers.
+
+74
+00:04:13.870 --> 00:04:15.340
+And add them, subtract them.
+
+75
+00:04:15.340 --> 00:04:17.240
+Do some logical operations on them.
+
+76
+00:04:17.240 --> 00:04:18.010
+So it's very simple.
+
+77
+00:04:18.010 --> 00:04:21.400
+We need,
+simply need to have some information from
+
+78
+00:04:21.400 --> 00:04:23.810
+the databus connect into the ALU.
+
+79
+00:04:23.810 --> 00:04:24.960
+And then information.
+
+80
+00:04:24.960 --> 00:04:28.200
+And then feeds the output
+value back into the databus.
+
+81
+00:04:28.200 --> 00:04:31.480
+That's going to be a, and from there,
+of course, it's going to have to go
+
+82
+00:04:31.480 --> 00:04:35.290
+to other places that also connect to the
+databus, like the memory or the registers.
+
+83
+00:04:36.410 --> 00:04:40.620
+There is one other piece of infor,
+plus other type of pieces of information
+
+84
+00:04:40.620 --> 00:04:45.370
+that ALB would, ALU will need to be
+connected to, this is the control bus.
+
+85
+00:04:45.370 --> 00:04:46.040
+On one hand,
+
+86
+00:04:46.040 --> 00:04:49.520
+of course the ALU needs to know what
+kind of operation it does every time.
+
+87
+00:04:49.520 --> 00:04:52.340
+So it has to reget information
+from the control bus,
+
+88
+00:04:52.340 --> 00:04:55.420
+specifying the type of
+operation that it does.
+
+89
+00:04:55.420 --> 00:04:59.470
+And on the other hand, according to
+the results of the arithmetic or
+
+90
+00:04:59.470 --> 00:05:01.115
+logical operations that it does.
+
+91
+00:05:01.115 --> 00:05:02.880
+It's going to be able to,
+
+92
+00:05:02.880 --> 00:05:06.080
+have to be able to tell the other
+parts of the system what to do.
+
+93
+00:05:06.080 --> 00:05:10.320
+For example, if it sees that a certain
+number is greater then 0, that can control
+
+94
+00:05:10.320 --> 00:05:14.070
+the jump in the next instruction,
+what the next instruction will be.
+
+95
+00:05:14.070 --> 00:05:16.950
+This control will happen
+through the control bits.
+
+96
+00:05:16.950 --> 00:05:21.150
+So we're going to also have to get,
+take some information from the ALU and
+
+97
+00:05:21.150 --> 00:05:23.080
+feed it back to control
+the rest of the system.
+
+98
+00:05:24.590 --> 00:05:26.500
+Let us consider now with the registers.
+
+99
+00:05:26.500 --> 00:05:29.180
+The registers conceptually
+are very simple.
+
+100
+00:05:29.180 --> 00:05:32.220
+Again, we store intermediate
+results in the registers.
+
+101
+00:05:32.220 --> 00:05:35.390
+So we're going to be,
+have to be able to take data in,
+
+102
+00:05:35.390 --> 00:05:38.270
+from the data bust into the registers and
+
+103
+00:05:38.270 --> 00:05:42.600
+then also take data's from the register
+then feeds them back into the data bus.
+
+104
+00:05:42.600 --> 00:05:45.570
+And of course where would they go
+from the data bus to other parts of
+
+105
+00:05:45.570 --> 00:05:47.540
+the system such, as the ALU.
+
+106
+00:05:47.540 --> 00:05:50.070
+So this is the first thing that
+of course we will have to connect
+
+107
+00:05:50.070 --> 00:05:51.440
+all the registers to the data bus.
+
+108
+00:05:52.660 --> 00:05:55.020
+The second piece of information is,
+sometimes,
+
+109
+00:05:55.020 --> 00:05:59.770
+as we've discussed previously, some
+registers are used to specify addresses.
+
+110
+00:05:59.770 --> 00:06:03.640
+The way we actually achieve
+indirect addressing into a RAM or
+
+111
+00:06:03.640 --> 00:06:08.280
+jump into a ROM address, the way we
+do it is usually we put numbers,
+
+112
+00:06:08.280 --> 00:06:13.020
+addresses into a register and then that
+specifies where we want to access.
+
+113
+00:06:13.020 --> 00:06:17.590
+So we're going to also have to
+have registers control a connected
+
+114
+00:06:17.590 --> 00:06:21.670
+to the address bus which controls
+again the memories, that,
+
+115
+00:06:21.670 --> 00:06:23.400
+which actually then feeds into the memory.
+
+116
+00:06:24.770 --> 00:06:28.310
+So that's a second type of
+information we'll need to have.
+
+117
+00:06:28.310 --> 00:06:31.390
+We will [INAUDIBLE] have some
+registers that are address registers,
+
+118
+00:06:31.390 --> 00:06:34.720
+either exclusively or
+both address and data registers.
+
+119
+00:06:34.720 --> 00:06:37.060
+And these will need to
+feed into the address bus.
+
+120
+00:06:39.820 --> 00:06:41.270
+The last piece of information,
+
+121
+00:06:41.270 --> 00:06:44.190
+the last piece that we need
+to talk about is a memory.
+
+122
+00:06:44.190 --> 00:06:48.790
+So on one hand the memory needs,
+we always need to specify what
+
+123
+00:06:48.790 --> 00:06:52.750
+address of the memory are we
+going to be working with.
+
+124
+00:06:52.750 --> 00:06:55.759
+And that is specified of course by the
+address method, that's the whole point.
+
+125
+00:06:56.850 --> 00:06:59.810
+And of course once we actually
+work with a certain address,
+
+126
+00:06:59.810 --> 00:07:01.720
+we're going to be need
+to be able to read it or
+
+127
+00:07:01.720 --> 00:07:05.830
+write into it, get information from it or
+put information into it.
+
+128
+00:07:05.830 --> 00:07:07.770
+So of course the data, the input and
+
+129
+00:07:07.770 --> 00:07:12.480
+the output of the memory unit will have
+to be connected to the, to the data bus.
+
+130
+00:07:13.840 --> 00:07:16.950
+Let us look slightly more clo,
+closer inside.
+
+131
+00:07:16.950 --> 00:07:20.490
+There are two pieces to the memory,
+there is a data memory and
+
+132
+00:07:20.490 --> 00:07:21.720
+there is a program memory.
+
+133
+00:07:21.720 --> 00:07:24.770
+Let's a lit, talk a little
+bit about each part of these.
+
+134
+00:07:24.770 --> 00:07:28.660
+Looking at the data memory, eh, that,
+what, it's going to need to get a,
+
+135
+00:07:28.660 --> 00:07:32.220
+an address of a data piece that
+needs to be operated upon.
+
+136
+00:07:32.220 --> 00:07:35.200
+And of course, then very simply,
+we need to write and read into it.
+
+137
+00:07:36.540 --> 00:07:42.280
+Looking at the other part which is the
+program memory, where also we, if, we're
+
+138
+00:07:42.280 --> 00:07:46.580
+going to need to put the address of the
+next program instruction into the, into
+
+139
+00:07:46.580 --> 00:07:50.440
+the program memory because this is where
+we're taking our program instructions.
+
+140
+00:07:50.440 --> 00:07:55.170
+We need to be able to put an address
+into the program memory address, and
+
+141
+00:07:55.170 --> 00:07:57.440
+then get the instructions from there.
+
+142
+00:07:57.440 --> 00:08:01.780
+Now the instructions that we get from the
+program memory, both may have data in it.
+
+143
+00:08:01.780 --> 00:08:04.940
+For example, it may have numbers
+that we need to add, and so on.
+
+144
+00:08:04.940 --> 00:08:08.670
+But, also it's an important thing,
+is the program actually tells,
+
+145
+00:08:08.670 --> 00:08:12.280
+the program instruction tells
+the rest of the system what to do.
+
+146
+00:08:12.280 --> 00:08:16.420
+So we need to be able to actually take
+information from the next instruction,
+
+147
+00:08:16.420 --> 00:08:19.450
+from the data output
+of the program memory.
+
+148
+00:08:19.450 --> 00:08:21.510
+And feed it into the control bus.
+
+149
+00:08:21.510 --> 00:08:25.550
+So that's another important piece
+of information that we need to do,
+
+150
+00:08:25.550 --> 00:08:30.149
+another important connection that we
+need to have inside the computer.
+
+151
+00:08:31.650 --> 00:08:35.750
+So, so far we talked about all
+the different pieces inside the,
+
+152
+00:08:35.750 --> 00:08:39.250
+all the different components that
+a computer is going to be composed of and
+
+153
+00:08:39.250 --> 00:08:42.070
+how they're connected to
+each other versus in the,
+
+154
+00:08:42.070 --> 00:08:45.930
+in the, in the sense of which
+information moves from where to where.
+
+155
+00:08:47.140 --> 00:08:51.630
+What we're going to do in the next unit,
+is actually look more closely
+
+156
+00:08:51.630 --> 00:08:55.410
+at the innermost loop, the basic thing
+that our hardware is supposed to do,
+
+157
+00:08:55.410 --> 00:08:59.380
+that is take an instruction from
+the memory, from the program memory, and
+
+158
+00:08:59.380 --> 00:09:03.070
+actually execute it using the rest
+of the system as appropriate.
+
+159
+00:09:03.070 --> 00:09:06.840
+That is called the fetch-execute cycle,
+and will be the content of the next unit.

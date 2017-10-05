@@ -1,0 +1,1863 @@
+WEBVTT
+
+1
+00:00:02.302 --> 00:00:06.940
+In this unit we're going to talk about
+the overall Hack Computer architecture.
+
+2
+00:00:06.940 --> 00:00:08.630
+And, we're going to give
+you all the information,
+
+3
+00:00:08.630 --> 00:00:12.690
+which is needed in or,
+in order to actually go out and build it.
+
+4
+00:00:12.690 --> 00:00:18.170
+So, here we see the overall hardware
+architecture of the Hack Computer.
+
+5
+00:00:18.170 --> 00:00:20.816
+And, we see that we have
+something new here.
+
+6
+00:00:20.816 --> 00:00:24.140
+We have two fancy input output devices.
+
+7
+00:00:24.140 --> 00:00:26.823
+In particular, we have a raster
+
+8
+00:00:26.823 --> 00:00:31.390
+display unit that enables us to
+take values from the computer, and
+
+9
+00:00:31.390 --> 00:00:35.990
+actually display them in some sensible
+way that makes sense to humans.
+
+10
+00:00:35.990 --> 00:00:39.580
+And, we also have a keyboard
+unit that will enable us to
+
+11
+00:00:39.580 --> 00:00:43.130
+interact with a program that
+currently runs in the computer.
+
+12
+00:00:43.130 --> 00:00:43.930
+Assuming of course,
+
+13
+00:00:43.930 --> 00:00:48.420
+that this program accepts us to
+to enter some values into it.
+
+14
+00:00:48.420 --> 00:00:51.500
+So, this is how the computer looks like,
+and
+
+15
+00:00:51.500 --> 00:00:55.440
+as usual, it pays off to
+think about the obstruction.
+
+16
+00:00:55.440 --> 00:00:59.670
+So from the user's perspective, or
+from the programmer's perspective,
+
+17
+00:00:59.670 --> 00:01:05.660
+we have some sort of a black box magic,
+or a computer that enables us to write,
+
+18
+00:01:05.660 --> 00:01:10.090
+to run on it programs within
+in Hack machine language.
+
+19
+00:01:10.090 --> 00:01:15.530
+Now, this is not to be taken lightly
+because if, for example, we would a write
+
+20
+00:01:15.530 --> 00:01:21.620
+a, a Java compiler that translates
+from Java to Hack machine language.
+
+21
+00:01:21.620 --> 00:01:25.050
+Well, this computer will be
+able to run Java programs.
+
+22
+00:01:25.050 --> 00:01:27.390
+And in fact, this is something that
+
+23
+00:01:27.390 --> 00:01:31.360
+we do something very similar to this
+in the second part of the course.
+
+24
+00:01:31.360 --> 00:01:34.170
+Which we will describe at
+the end of this course.
+
+25
+00:01:34.170 --> 00:01:37.980
+So abstractly,
+we have a general purpose that
+
+26
+00:01:37.980 --> 00:01:43.690
+can run any program that can be
+translated into Hack native code.
+
+27
+00:01:43.690 --> 00:01:48.090
+So, this is the top down description or
+abstraction of this computer.
+
+28
+00:01:48.090 --> 00:01:50.570
+We can also describe
+this computer bottom up.
+
+29
+00:01:50.570 --> 00:01:52.040
+How do we build this computer?
+
+30
+00:01:52.040 --> 00:01:56.000
+Well, it turns out, we can build this
+computer using some of the chips
+
+31
+00:01:56.000 --> 00:01:59.770
+that we built previously in this course,
+that actually you built.
+
+32
+00:01:59.770 --> 00:02:03.720
+And, all we have to do is put them
+together in some judicious way, and
+
+33
+00:02:03.720 --> 00:02:07.460
+we'll get an architecture
+that enables us to
+
+34
+00:02:07.460 --> 00:02:09.640
+realize the abstraction
+that we just described.
+
+35
+00:02:10.870 --> 00:02:14.370
+So once again,
+this is the overall architecture.
+
+36
+00:02:14.370 --> 00:02:19.440
+And what we'll do in this unit is focus
+on every one of these three pieces,
+
+37
+00:02:19.440 --> 00:02:21.640
+and describe first of all, what it does.
+
+38
+00:02:21.640 --> 00:02:26.460
+And second of all, how can actually,
+how we can actually build it.
+
+39
+00:02:26.460 --> 00:02:30.910
+Let us start with the CPU, which is
+the centerpiece of the architecture.
+
+40
+00:02:30.910 --> 00:02:35.660
+And, I don't want to talk too much
+about the CPU because I just spent
+
+41
+00:02:35.660 --> 00:02:38.610
+about 20 minutes talking about
+it in the previous unit.
+
+42
+00:02:38.610 --> 00:02:44.080
+So, I'd like to kind of gloss over what
+the CPU is supposed to do in the overall
+
+43
+00:02:44.080 --> 00:02:45.850
+hardware architecture.
+
+44
+00:02:45.850 --> 00:02:49.130
+Here is the interface that we've
+seen in the previous unit.
+
+45
+00:02:49.130 --> 00:02:53.010
+And, let us explore this interface
+in the context of three possible
+
+46
+00:02:54.090 --> 00:02:55.710
+Hack instructions.
+
+47
+00:02:55.710 --> 00:02:57.280
+How will the CPU, or
+
+48
+00:02:57.280 --> 00:03:01.280
+how does the CPU supposed to do
+to deal with these instructions?
+
+49
+00:03:01.280 --> 00:03:06.380
+Well, everything is being done
+according to Hack language
+
+50
+00:03:06.380 --> 00:03:09.290
+specification contract if you will.
+
+51
+00:03:09.290 --> 00:03:15.049
+So, if the instruction mentions the
+pneumonic's D and A, the CPU is going to
+
+52
+00:03:15.049 --> 00:03:20.730
+manipulate the respective D and
+A registers, which reside inside the CPU.
+
+53
+00:03:21.840 --> 00:03:26.970
+If the instruction is an a instruction,
+well in this case the CPU
+
+54
+00:03:26.970 --> 00:03:32.450
+is going to take the data value, the 15
+bit, so called x in this instruction.
+
+55
+00:03:32.450 --> 00:03:35.738
+And, it is going to put
+them inside the A-register.
+
+56
+00:03:35.738 --> 00:03:40.950
+If the right-hand side of
+the instruction mentions
+
+57
+00:03:40.950 --> 00:03:46.300
+the pneumonic M,
+then the CPU expects to see this value or
+
+58
+00:03:46.300 --> 00:03:51.960
+some data value in the NM
+input of the CPU interface.
+
+59
+00:03:51.960 --> 00:03:57.610
+That is this input is supposed
+to contain the value of
+
+60
+00:03:57.610 --> 00:04:01.280
+the currently selected
+data memory register.
+
+61
+00:04:02.530 --> 00:04:07.020
+And, if the instruction's left
+hand side contains the numonic
+
+62
+00:04:07.020 --> 00:04:10.280
+M as one of the destinations
+of the operation, and
+
+63
+00:04:10.280 --> 00:04:15.180
+we see it in the last example here,
+in the third instruction in the slide.
+
+64
+00:04:15.180 --> 00:04:16.930
+So if this is the case,
+
+65
+00:04:16.930 --> 00:04:21.930
+then the value output should
+be stored in the main memory.
+
+66
+00:04:21.930 --> 00:04:24.260
+In this case, we discussed it before.
+
+67
+00:04:24.260 --> 00:04:29.940
+We have to provide three different pieces
+of data: the value that we want to store,
+
+68
+00:04:29.940 --> 00:04:33.610
+the address, where we want to store it,
+and the control bit.
+
+69
+00:04:33.610 --> 00:04:39.450
+So, this is done by the CPU, in the way
+that was discussed in the previous unit.
+
+70
+00:04:39.450 --> 00:04:43.180
+Moving along,
+let's see how the CPU handles jumps.
+
+71
+00:04:43.180 --> 00:04:48.400
+So once again, we have a typical,
+jump situation.
+
+72
+00:04:48.400 --> 00:04:52.310
+The A register already includes,
+the address 100.
+
+73
+00:04:52.310 --> 00:04:57.830
+We, we assume that this is the case,
+and now we have a conditional jump.
+
+74
+00:04:57.830 --> 00:04:59.120
+D equals D minus 1.
+
+75
+00:04:59.120 --> 00:05:05.320
+And if the result of this operation or
+the area output is zero, we want to jump.
+
+76
+00:05:05.320 --> 00:05:06.260
+Jump where?
+
+77
+00:05:06.260 --> 00:05:10.160
+To the address that was specified before,
+to 100.
+
+78
+00:05:10.160 --> 00:05:11.190
+How do we do it?
+
+79
+00:05:11.190 --> 00:05:13.760
+Well, if reset equals zero,
+
+80
+00:05:13.760 --> 00:05:16.100
+which is normally the case
+when a program is running.
+
+81
+00:05:16.100 --> 00:05:20.100
+Reset equals zero because the user
+doesn't touch the reset button.
+
+82
+00:05:20.100 --> 00:05:23.260
+Then, the CPU logic uses the jump bits and
+
+83
+00:05:23.260 --> 00:05:27.380
+the ALU output to decide whether or
+not there should be a jump.
+
+84
+00:05:27.380 --> 00:05:31.910
+If there is a jump,
+PCs set to the value of the A-register.
+
+85
+00:05:31.910 --> 00:05:36.052
+If there's no jump, PC is incremented, and
+
+86
+00:05:36.052 --> 00:05:41.395
+the updated PC value is emitted
+by the PC output of the CPU.
+
+87
+00:05:41.395 --> 00:05:45.139
+If reset equal 1,
+it means that the user wants to reset,
+
+88
+00:05:45.139 --> 00:05:48.660
+and rerun the program from the beginning.
+
+89
+00:05:48.660 --> 00:05:53.480
+So in this case, PC is set to zero,
+and that's the end of the story.
+
+90
+00:05:53.480 --> 00:05:58.430
+So this, in a nutshell,
+is the contract according to which
+
+91
+00:05:58.430 --> 00:06:02.950
+the CPU is supposed to operate in
+the overall computer architecture.
+
+92
+00:06:04.110 --> 00:06:08.030
+Moving along,
+let us discuss the data memory.
+
+93
+00:06:08.030 --> 00:06:11.800
+The data memory, if you recall,
+is the area in which we
+
+94
+00:06:11.800 --> 00:06:16.130
+store all the data of the program,
+and and here is how we do it.
+
+95
+00:06:17.370 --> 00:06:22.160
+Well, if we think about this data
+memory from a programmers perspective,
+
+96
+00:06:23.170 --> 00:06:26.810
+it's convenient to think about it in
+terms of three different segments.
+
+97
+00:06:26.810 --> 00:06:30.040
+Or logical segments, if you will.
+
+98
+00:06:30.040 --> 00:06:32.860
+Addresses 0 up to 16k are used
+
+99
+00:06:32.860 --> 00:06:37.330
+to store the data that the program
+generates and manipulates.
+
+100
+00:06:37.330 --> 00:06:42.750
+The next 8k of the memory are used
+to store the screen memory map.
+
+101
+00:06:42.750 --> 00:06:46.310
+If you want to draw something on,
+on the screen,
+
+102
+00:06:46.310 --> 00:06:50.030
+you have to manipulate bits
+in this memory segment.
+
+103
+00:06:50.030 --> 00:06:55.960
+And finally, the last register in
+the memory is used to reflect or
+
+104
+00:06:55.960 --> 00:07:01.470
+to tell us which key is currently
+being pressed on the keyboard.
+
+105
+00:07:01.470 --> 00:07:03.960
+Now once again,
+this is an obstruction, right,
+
+106
+00:07:03.960 --> 00:07:08.960
+this is how the programmer expects
+this this memory to, to operate.
+
+107
+00:07:08.960 --> 00:07:13.170
+And now, let's us turn to discuss
+how we actually make it happen.
+
+108
+00:07:13.170 --> 00:07:19.980
+Well, we do it by building the memory from
+three different sub chips, if you will.
+
+109
+00:07:19.980 --> 00:07:24.210
+Or chip parts,
+as we call it in our HDL jargon.
+
+110
+00:07:24.210 --> 00:07:27.590
+So, the first segment is
+just a standard RAM chip.
+
+111
+00:07:27.590 --> 00:07:33.650
+The second segment is a, a,
+special chip called screen.
+
+112
+00:07:33.650 --> 00:07:38.180
+And, the last segment is yet another
+special chip, which we call keyboard.
+
+113
+00:07:38.180 --> 00:07:39.280
+And in the next few minutes,
+
+114
+00:07:39.280 --> 00:07:43.170
+I want to say a few words about
+every one of these chip parts.
+
+115
+00:07:43.170 --> 00:07:45.160
+So, let us start with the RAM.
+
+116
+00:07:45.160 --> 00:07:47.230
+The RAM is trivial.
+
+117
+00:07:47.230 --> 00:07:50.724
+We've built it in in
+project three I believe.
+
+118
+00:07:50.724 --> 00:07:53.742
+One of the chips that you
+built was called RAM 16.
+
+119
+00:07:53.742 --> 00:08:00.068
+So we just plug it in, and this gives
+us the the necessary Implementation.
+
+120
+00:08:00.068 --> 00:08:05.900
+And notice, that the inputs and outputs of
+the RAM 16 are identical to the inputs and
+
+121
+00:08:05.900 --> 00:08:09.510
+outputs of the overall, memory chip.
+
+122
+00:08:09.510 --> 00:08:14.460
+So whoever builds this chip has to make
+sure to take the outside, inputs and
+
+123
+00:08:14.460 --> 00:08:19.480
+outputs, so, so to speak, and connect
+them, make the connections that will
+
+124
+00:08:19.480 --> 00:08:25.500
+funnel these values into the inner chip
+box, into the RAM, RAM 16K, chip box.
+
+125
+00:08:26.700 --> 00:08:29.870
+Moving along, the next segment
+in the memory if you recall,
+
+126
+00:08:29.870 --> 00:08:34.790
+is called screen, and before we talk
+about the implementation of this,
+
+127
+00:08:34.790 --> 00:08:40.370
+memory segment, let us remind ourself,
+what we mean when we say memory map.
+
+128
+00:08:40.370 --> 00:08:44.550
+Now we discussed it at length when
+we talked about hack programming.
+
+129
+00:08:44.550 --> 00:08:48.930
+So I'm not going to repeat it,
+I will just gloss over the main ideas.
+
+130
+00:08:48.930 --> 00:08:51.910
+So, we assume that we have,
+
+131
+00:08:51.910 --> 00:08:56.410
+a display unit consisting of so
+many rows and so many columns.
+
+132
+00:08:56.410 --> 00:09:00.080
+It's a black and white, display device.
+
+133
+00:09:00.080 --> 00:09:04.430
+We assume that we have an area in
+the memory that controls these units so
+
+134
+00:09:04.430 --> 00:09:10.210
+that when we chain the,
+when we change bytes in this, special,
+
+135
+00:09:10.210 --> 00:09:16.620
+memora, memory, area, the architecture
+refreshes the screen accordingly.
+
+136
+00:09:16.620 --> 00:09:19.750
+And this refresh happens several times.
+
+137
+00:09:19.750 --> 00:09:21.290
+Each, each second.
+
+138
+00:09:22.330 --> 00:09:29.330
+Now there is also a mapping that tells
+us how to relate, organize with pixels,
+
+139
+00:09:29.330 --> 00:09:34.930
+on the display unit with specific
+bits in the, in the memory map.
+
+140
+00:09:34.930 --> 00:09:39.070
+And, once again we discussed this before,
+you are more then welcome to stop
+
+141
+00:09:39.070 --> 00:09:43.260
+the video and,
+make sure that this mapping makes sense.
+
+142
+00:09:43.260 --> 00:09:45.570
+And this is how the memory map is,
+
+143
+00:09:45.570 --> 00:09:51.100
+specified and, designed in
+the context of a Hack computer.
+
+144
+00:09:51.100 --> 00:09:52.810
+So how do we implement it?
+
+145
+00:09:52.810 --> 00:09:58.710
+Well, we use a special
+built-in screen chip that
+
+146
+00:09:58.710 --> 00:10:05.550
+knows how to automatically quote unquote
+refresh a connected display unit.
+
+147
+00:10:05.550 --> 00:10:08.990
+Now I want you to notice
+that in the most part
+
+148
+00:10:08.990 --> 00:10:11.030
+there's nothing special about this chip.
+
+149
+00:10:11.030 --> 00:10:13.460
+It's just a regular RAM chip.
+
+150
+00:10:13.460 --> 00:10:20.550
+However, it has this nice side effect of
+refreshing, a connected, display unit.
+
+151
+00:10:20.550 --> 00:10:25.860
+So, this is the chip that we are going to
+use in order to implement, the memory,
+
+152
+00:10:25.860 --> 00:10:28.310
+sorry, the,
+the display effect of our computer.
+
+153
+00:10:29.660 --> 00:10:32.230
+Moving along, what about the keyboard?
+
+154
+00:10:32.230 --> 00:10:37.010
+Well, the keyboard is implemented
+with a single register,
+
+155
+00:10:37.010 --> 00:10:40.410
+a 16 bit register, which we call Keyboard.
+
+156
+00:10:40.410 --> 00:10:43.870
+And, this register is connected
+to a standard keyboard,
+
+157
+00:10:43.870 --> 00:10:45.679
+similar to the one that
+you are currently using.
+
+158
+00:10:46.880 --> 00:10:51.060
+And, we discussed it, once again
+we discussed it in, in week four.
+
+159
+00:10:52.130 --> 00:10:53.780
+How do we handle inputs?
+
+160
+00:10:53.780 --> 00:10:58.700
+Well, if we don't touch the keyboard,
+the keyboard, register is going
+
+161
+00:10:58.700 --> 00:11:04.340
+to emit the value zero, oh, and
+it's going to contain the value zero.
+
+162
+00:11:04.340 --> 00:11:09.230
+If we take our finger and
+touch or press one of these keys,
+
+163
+00:11:09.230 --> 00:11:15.250
+the scan code of this key is going to
+be stored inside the keyboard register.
+
+164
+00:11:15.250 --> 00:11:21.520
+So for example, if we press k,
+it turns out that the scan
+
+165
+00:11:21.520 --> 00:11:27.100
+code of k is 107 and 107, 107 Is going
+to appear in binary in this register.
+
+166
+00:11:27.100 --> 00:11:30.950
+So as long as our finger is down,
+we'll see, 110, 1011.
+
+167
+00:11:30.950 --> 00:11:38.250
+Once we take the finger,
+away, it will show 0.
+
+168
+00:11:38.250 --> 00:11:43.500
+Likewise, if we, click something else,
+the number four, turns out
+
+169
+00:11:43.500 --> 00:11:48.280
+that the scan code of four is 52, we see
+this value if we click space we see 33.
+
+170
+00:11:48.280 --> 00:11:51.900
+If we click up arrow
+we see something else.
+
+171
+00:11:51.900 --> 00:11:55.480
+So that's the deal,
+that's how the keyboard operates and
+
+172
+00:11:55.480 --> 00:12:00.860
+what we see in the keyboard is called, or
+is usually called, a keyboard memory map.
+
+173
+00:12:02.540 --> 00:12:03.760
+How do we implement it?
+
+174
+00:12:03.760 --> 00:12:08.763
+Well once again,
+we use a special chip which,
+
+175
+00:12:09.920 --> 00:12:13.950
+is connected to the keyboard and
+as I said before I want to repeat it.
+
+176
+00:12:13.950 --> 00:12:17.370
+Now there is nothing
+special about this chip.
+
+177
+00:12:17.370 --> 00:12:21.070
+It's a regular register It
+has a nice side effect.
+
+178
+00:12:21.070 --> 00:12:26.870
+And the side effect is it always reflects
+what the user is pressing on the keyboard.
+
+179
+00:12:26.870 --> 00:12:33.722
+And most of the time it's zero, because
+most of the time the keyboard is not used.
+
+180
+00:12:33.722 --> 00:12:38.400
+All right, how do we, read the keyboard?
+
+181
+00:12:38.400 --> 00:12:40.860
+Well, we talked about it in week four.
+
+182
+00:12:41.950 --> 00:12:47.500
+To read the keyboard, we simply probe the
+output of the keyboard register, right?
+
+183
+00:12:47.500 --> 00:12:51.690
+We see that keyboard register has an
+external state that we don't see in this
+
+184
+00:12:51.690 --> 00:12:55.230
+diagram here but
+it also has an output, pin
+
+185
+00:12:56.500 --> 00:13:01.210
+just like any regular register so we can
+read what comes out from the keyboard and
+
+186
+00:13:01.210 --> 00:13:06.090
+from this information we know,
+which key is currently pressed.
+
+187
+00:13:06.090 --> 00:13:11.240
+But if we use the keyboard in
+the overall context of Hack memory,
+
+188
+00:13:11.240 --> 00:13:16.205
+we have to probe the contents
+of memory register 24 or
+
+189
+00:13:16.205 --> 00:13:24.430
+24,576 because this happens to be
+the address, of the keyboard, interface,
+
+190
+00:13:24.430 --> 00:13:29.420
+or the keyboard, memory map with in the
+overall output space of the memory unit.
+
+191
+00:13:31.330 --> 00:13:34.700
+Okay, so, we know how to handle,
+
+192
+00:13:34.700 --> 00:13:39.710
+how to, handle and, build roughly the CPU.
+
+193
+00:13:39.710 --> 00:13:42.870
+We know how to implement the, memory.
+
+194
+00:13:42.870 --> 00:13:46.920
+We are going back to,
+the overall computer architecture.
+
+195
+00:13:46.920 --> 00:13:50.495
+And, I've added,
+something little to this architecture, and
+
+196
+00:13:50.495 --> 00:13:52.470
+this is the, reset button.
+
+197
+00:13:52.470 --> 00:13:57.150
+I want to remind you that if we actually
+set out to build this computer,
+
+198
+00:13:57.150 --> 00:14:01.320
+we're going to have a black box with
+a reset button, and this reset button
+
+199
+00:14:01.320 --> 00:14:07.540
+corresponds in my diagram to this, orange,
+reset, oval that you see in front of you.
+
+200
+00:14:07.540 --> 00:14:13.360
+And we're going to refer to this reset,
+in the remaining slides in this unit.
+
+201
+00:14:14.380 --> 00:14:15.210
+Okay.
+
+202
+00:14:15.210 --> 00:14:18.880
+So with that in mind,
+the next thing that we want to,
+
+203
+00:14:18.880 --> 00:14:24.380
+implement is the instruction memory
+of the Hack, computer system,
+
+204
+00:14:24.380 --> 00:14:30.130
+and we implement this instruction memory
+using, a chip which we call ROM 32K.
+
+205
+00:14:30.130 --> 00:14:35.880
+Let us assume that we have this
+computer sitting on the table, and
+
+206
+00:14:35.880 --> 00:14:42.329
+next to this computer, we have a program
+written in the Hack, machine language.
+
+207
+00:14:44.150 --> 00:14:45.830
+In order to run this program,
+
+208
+00:14:45.830 --> 00:14:50.770
+the first that we have to do is somehow
+load it into the computer, right?
+
+209
+00:14:50.770 --> 00:14:53.170
+So, we load it into the computer.
+
+210
+00:14:53.170 --> 00:14:58.140
+And in particular,
+we load it into the ROM 32K chip.
+
+211
+00:14:58.140 --> 00:15:01.500
+We press the reset button
+that we just discussed, and
+
+212
+00:15:01.500 --> 00:15:03.780
+the program will start running.
+
+213
+00:15:03.780 --> 00:15:06.430
+This is the obstruction
+that we want to implement.
+
+214
+00:15:08.040 --> 00:15:11.920
+Now, I am sure that many of you
+are scratching your head and saying,
+
+215
+00:15:11.920 --> 00:15:17.900
+well how do you actually get a program
+which resides on a piece of paper or
+
+216
+00:15:17.900 --> 00:15:21.600
+in some text file and
+put it inside the computer.
+
+217
+00:15:21.600 --> 00:15:24.490
+Well it turns out that there
+are several ways to do it.
+
+218
+00:15:24.490 --> 00:15:27.910
+One of them is to use
+plug-and-play ROM chips.
+
+219
+00:15:27.910 --> 00:15:35.120
+So, we burn our code, the machine
+instructions code into a RAM chip.
+
+220
+00:15:35.120 --> 00:15:40.040
+We take this RAM chip, we plug it into
+the computer, we press the Reset button,
+
+221
+00:15:40.040 --> 00:15:44.650
+and the computer will start executing
+this, this particular program.
+
+222
+00:15:44.650 --> 00:15:48.528
+If we want to run another program,
+we take this chip out, and
+
+223
+00:15:48.528 --> 00:15:52.876
+we plug in another ROM chip that
+has another program burned into it.
+
+224
+00:15:52.876 --> 00:15:57.159
+And this is actually quite similar to
+the way some game consoles operate.
+
+225
+00:15:57.159 --> 00:15:59.493
+You have some cartridges
+with games that you plug in.
+
+226
+00:15:59.493 --> 00:16:01.065
+You play a certain game.
+
+227
+00:16:01.065 --> 00:16:05.990
+You want to play another game, you,
+you plugin another cartridge and so on.
+
+228
+00:16:05.990 --> 00:16:08.360
+So that's one way to, to implement it.
+
+229
+00:16:08.360 --> 00:16:11.913
+Another way to implement it is
+using hardware simulation and
+
+230
+00:16:11.913 --> 00:16:15.615
+that's what we what we are going to do in,
+in this course.
+
+231
+00:16:15.615 --> 00:16:16.906
+We use a hardware simulator.
+
+232
+00:16:16.906 --> 00:16:21.448
+If we use a hardware simulator, we have
+the freedom to do many different things.
+
+233
+00:16:21.448 --> 00:16:26.033
+And indeed, we are going to use
+a built-in ROM chip that actually,
+
+234
+00:16:26.033 --> 00:16:30.780
+once again, there's nothing special
+about it because it operations
+
+235
+00:16:30.780 --> 00:16:35.698
+very similarly to a RAM that
+you built-in in, project three.
+
+236
+00:16:35.698 --> 00:16:39.378
+But it has a nice side
+effect that it allows you,
+
+237
+00:16:39.378 --> 00:16:42.598
+using simulation to load programs into it
+
+238
+00:16:43.702 --> 00:16:48.406
+residing programs that are residing
+on regular text files.
+
+239
+00:16:48.406 --> 00:16:51.048
+And let me take a minute and and
+
+240
+00:16:51.048 --> 00:16:55.870
+illustrate how this is actually being
+done in our hardware simulator.
+
+241
+00:16:57.640 --> 00:17:00.698
+Welcome to the Hack CPU Emulator.
+
+242
+00:17:00.698 --> 00:17:05.889
+The CPU emulator is a Java program
+that gives you a visual rendition
+
+243
+00:17:05.889 --> 00:17:12.115
+of what is happening inside the Hack
+computer when a program is being executed.
+
+244
+00:17:12.115 --> 00:17:13.853
+And indeed, if you look around,
+
+245
+00:17:13.853 --> 00:17:17.408
+you will see all sorts of familiar
+elements from the heck platform.
+
+246
+00:17:17.408 --> 00:17:22.563
+On the left-hand side,
+we see the instruction memory and
+
+247
+00:17:22.563 --> 00:17:25.490
+right next to it, the data memory.
+
+248
+00:17:25.490 --> 00:17:31.095
+And below, we see the current
+value of the A-register here and
+
+249
+00:17:31.095 --> 00:17:35.221
+the current value of
+the D-register there and
+
+250
+00:17:35.221 --> 00:17:40.228
+there's also a visual rendition
+of the ALU operation.
+
+251
+00:17:40.228 --> 00:17:43.743
+Another control of interest is this one,
+
+252
+00:17:43.743 --> 00:17:49.073
+which shows you the current value
+of the so-called program counter.
+
+253
+00:17:49.073 --> 00:17:53.556
+The program counter is a register
+that contains the address of
+
+254
+00:17:53.556 --> 00:17:58.210
+the instruction that will be
+executed next in the program,
+
+255
+00:17:58.210 --> 00:18:02.365
+which is currently loaded
+into the instruction memory.
+
+256
+00:18:02.365 --> 00:18:05.301
+Now right now, we have no program
+in the instruction memory,
+
+257
+00:18:05.301 --> 00:18:07.650
+so lets go ahead and load one.
+
+258
+00:18:07.650 --> 00:18:15.031
+So, I click this control here and I have
+this folder called program examples.
+
+259
+00:18:15.031 --> 00:18:18.073
+So, I'm going to select it.
+
+260
+00:18:18.073 --> 00:18:22.406
+And inside program examples,
+there are all sorts of Hack programs.
+
+261
+00:18:22.406 --> 00:18:28.990
+I'm going to select the first one,
+add2and click the Load ROM button.
+
+262
+00:18:28.990 --> 00:18:33.479
+And I see that now the instruction
+memory contains what seems to be
+
+263
+00:18:33.479 --> 00:18:37.750
+a sequence of Hack machine instructions,
+written in assembly.
+
+264
+00:18:37.750 --> 00:18:41.323
+[COUGH] I'm sorry,
+written in assembly language.
+
+265
+00:18:41.323 --> 00:18:47.281
+Now, if I want, I can look at these
+instructions in binary format.
+
+266
+00:18:47.281 --> 00:18:53.402
+And yet as we argued before, it's much
+easier to think about the program and
+
+267
+00:18:53.402 --> 00:19:01.320
+display it and understand it when it's
+visualized using these assembly comments.
+
+268
+00:19:01.320 --> 00:19:03.822
+Now, according to the rules of the game or
+more precisely,
+
+269
+00:19:03.822 --> 00:19:05.531
+according to the rules of this program.
+
+270
+00:19:05.531 --> 00:19:10.448
+In order to run it, we first have to
+enter some numbers into the the RAM.
+
+271
+00:19:10.448 --> 00:19:11.870
+So let's see.
+
+272
+00:19:11.870 --> 00:19:17.531
+I'm going to enter, let's say,
+12 here and 7 there.
+
+273
+00:19:17.531 --> 00:19:21.031
+These are completely arbitrary values.
+
+274
+00:19:21.031 --> 00:19:25.827
+And hopefully, the program will end
+up summing up these two values and
+
+275
+00:19:25.827 --> 00:19:28.032
+putting the result in in RAM 2.
+
+276
+00:19:28.032 --> 00:19:31.900
+So to check that this
+is actually the case,
+
+277
+00:19:31.900 --> 00:19:36.831
+I can begin running the program and
+I do it by using this
+
+278
+00:19:36.831 --> 00:19:42.190
+visual metaphor here of
+an advance of sort VCR control.
+
+279
+00:19:42.190 --> 00:19:45.448
+So let's, let's advance and
+execute the first instruction.
+
+280
+00:19:45.448 --> 00:19:51.108
+Well, nothing dramatic happened let
+us execute the next instruction and
+
+281
+00:19:51.108 --> 00:19:53.948
+I see that the D-register became 12.
+
+282
+00:19:53.948 --> 00:20:00.574
+So we managed to load the contents
+of RAM 0 into the D-register.
+
+283
+00:20:00.574 --> 00:20:06.198
+Moving along, I now execute the next
+instruction, which was at one.
+
+284
+00:20:06.198 --> 00:20:10.823
+And indeed, I see that the value
+of the A-register is now one.
+
+285
+00:20:10.823 --> 00:20:14.073
+Let's do the first instruction
+D equals D plus M.
+
+286
+00:20:14.073 --> 00:20:20.574
+And indeed, we see that the current value
+of D became 19, which is 12 plus 7.
+
+287
+00:20:20.574 --> 00:20:25.904
+And finally, we execute at two,
+which selects this
+
+288
+00:20:25.904 --> 00:20:32.156
+register here in In the RAM register
+number two, I see it here as well.
+
+289
+00:20:32.156 --> 00:20:33.866
+And finally, M equals D.
+
+290
+00:20:33.866 --> 00:20:39.156
+And indeed, we see that RAM 2 became 19.
+
+291
+00:20:39.156 --> 00:20:43.780
+So, lo and behold, it looks like
+the program is actually working.
+
+292
+00:20:43.780 --> 00:20:47.333
+Now notice that the program
+counter is six, so
+
+293
+00:20:47.333 --> 00:20:52.802
+if I keep on executing commands
+I will continue to execute
+
+294
+00:20:52.802 --> 00:20:57.198
+whatever resides here in
+memory in all these addresses.
+
+295
+00:20:57.198 --> 00:21:00.452
+Which is a little bit worrisome and
+
+296
+00:21:00.452 --> 00:21:05.198
+I will get back to talk about
+it a little bit later on.
+
+297
+00:21:05.198 --> 00:21:05.850
+All right.
+
+298
+00:21:05.850 --> 00:21:09.073
+Now let us suppose that we want to
+rerun this program from scratch.
+
+299
+00:21:09.073 --> 00:21:12.948
+So what we can do is rewind the program,
+so to speak.
+
+300
+00:21:12.948 --> 00:21:16.084
+Now there's no rewind in, in computers but
+
+301
+00:21:16.084 --> 00:21:21.448
+this visual metaphor here indicates that
+the program counter has been set to zero.
+
+302
+00:21:21.448 --> 00:21:26.273
+And this actually causes
+the computer to to set itself to
+
+303
+00:21:26.273 --> 00:21:30.948
+a position in which it can start
+executing this program again.
+
+304
+00:21:30.948 --> 00:21:35.281
+So we can, you know,
+try some other values here.
+
+305
+00:21:35.281 --> 00:21:40.815
+Let's, let's enter just the first
+value is now minus five and
+
+306
+00:21:40.815 --> 00:21:43.366
+I'm going to rewind once again.
+
+307
+00:21:43.366 --> 00:21:48.342
+And now, I'm going to fast forward,
+which actually means, just, you know,
+
+308
+00:21:48.342 --> 00:21:52.741
+let the whole program execute
+automatically, so to speak.
+
+309
+00:21:52.741 --> 00:21:57.811
+So we see that the program is indeed
+executing without any help from us and
+
+310
+00:21:57.811 --> 00:22:00.463
+let us pause it for a little while and
+
+311
+00:22:00.463 --> 00:22:05.310
+we see that we got the right answer,
+which is 2 minus 5 plus 7 is 2.
+
+312
+00:22:05.310 --> 00:22:10.565
+And if we continue to execute
+it the computer will kind of,
+
+313
+00:22:10.565 --> 00:22:17.324
+spin its wheels, so to speak and
+will execute all these null instructions.
+
+314
+00:22:17.324 --> 00:22:21.359
+And indeed, we see that nothing's
+actually happening, but
+
+315
+00:22:21.359 --> 00:22:25.948
+the program's kind of out of control and
+we have to think about way to resolve it.
+
+316
+00:22:25.948 --> 00:22:30.720
+But for now, what is more interesting
+is the fact that we learned
+
+317
+00:22:30.720 --> 00:22:35.661
+how to execute a program and how to
+inspect the various controls here and
+
+318
+00:22:35.661 --> 00:22:42.110
+convince ourself that the program is
+actually doing what it's supposed to do.
+
+319
+00:22:42.110 --> 00:22:46.662
+So now that we understand how
+the ROM comes to play in simulation,
+
+320
+00:22:46.662 --> 00:22:51.193
+let's go back to the general
+specification of the ROM.
+
+321
+00:22:51.193 --> 00:22:57.210
+It's almost a regular memory chip.
+
+322
+00:22:57.210 --> 00:22:58.532
+It has an address coming in.
+
+323
+00:22:58.532 --> 00:23:01.540
+It has some output coming out.
+
+324
+00:23:01.540 --> 00:23:03.884
+It's a ROM device, read-only, so
+
+325
+00:23:03.884 --> 00:23:08.283
+we don't have any machinery
+that enables writing into it.
+
+326
+00:23:08.283 --> 00:23:13.845
+And if you recall,
+the output of of the ROM is always
+
+327
+00:23:13.845 --> 00:23:20.080
+the contents of the register that
+is selected by the address input.
+
+328
+00:23:21.150 --> 00:23:25.204
+So, if I enter 17 into the address input,
+
+329
+00:23:25.204 --> 00:23:30.698
+what will come out is the contents
+of register number 17.
+
+330
+00:23:30.698 --> 00:23:36.793
+So, it makes a lot of sense to take this
+ROM and connect it to the program counter,
+
+331
+00:23:36.793 --> 00:23:42.906
+because the program counter always admits
+the address of the next instruction.
+
+332
+00:23:42.906 --> 00:23:46.026
+So, if we feed this address into the ROM,
+
+333
+00:23:46.026 --> 00:23:50.095
+we are guaranteed that
+the ROM will always admit.
+
+334
+00:23:50.095 --> 00:23:54.335
+A 16-bit value that we can treat
+as the current instruction.
+
+335
+00:23:54.335 --> 00:23:59.306
+And if the PC is doing what it's
+supposed to do, then in every cycle,
+
+336
+00:23:59.306 --> 00:24:02.820
+the PC will provide
+The address of the next,
+
+337
+00:24:02.820 --> 00:24:06.430
+instruction that we want to, execute.
+
+338
+00:24:06.430 --> 00:24:10.030
+And this is after taking into
+consideration all the go tos and
+
+339
+00:24:10.030 --> 00:24:12.740
+the conditional go tos and, and so on.
+
+340
+00:24:12.740 --> 00:24:17.570
+And what will come out from the rung
+is always the current instruction
+
+341
+00:24:17.570 --> 00:24:19.730
+that we want to execute.
+
+342
+00:24:19.730 --> 00:24:21.170
+As if by magic.
+
+343
+00:24:21.170 --> 00:24:23.710
+Of course we know that
+there's nothing magical here,
+
+344
+00:24:23.710 --> 00:24:28.430
+because we're going to build everything,
+all of this ourselves.
+
+345
+00:24:28.430 --> 00:24:33.900
+So, having said that we can
+now finally rap up this,
+
+346
+00:24:33.900 --> 00:24:38.870
+discussion and talk about how we build
+the overall computer architecture.
+
+347
+00:24:38.870 --> 00:24:43.090
+Okay, so we start with the CPU and
+as was just discussed,
+
+348
+00:24:43.090 --> 00:24:47.680
+we connect to it the instruction
+memory which we call ROM.
+
+349
+00:24:47.680 --> 00:24:50.420
+And we connect it in exactly the same
+manner that we just discussed.
+
+350
+00:24:50.420 --> 00:24:55.330
+So, the instruction input of
+the CPU is taken from the output
+
+351
+00:24:55.330 --> 00:25:00.920
+of the instruction memory, and so we have
+the current instruction to operate on and
+
+352
+00:25:00.920 --> 00:25:04.060
+in the process of executing this
+instruction we are going to compute
+
+353
+00:25:04.060 --> 00:25:07.480
+the address of the next instruction
+that has to be fetched and
+
+354
+00:25:07.480 --> 00:25:12.270
+this address is going to be
+emitted by the program counter.
+
+355
+00:25:12.270 --> 00:25:16.720
+And it goes all the way into
+the address of the instruction unit,
+
+356
+00:25:16.720 --> 00:25:21.740
+of the instruction memory unit, and,
+this unit in turn will then emit
+
+357
+00:25:21.740 --> 00:25:27.360
+the next instruction that has to
+be executed in the next cycle.
+
+358
+00:25:27.360 --> 00:25:31.930
+Now, the CPU in this, sub diagram
+here is kind of spinning its wheels.
+
+359
+00:25:31.930 --> 00:25:35.520
+And nothing, nothing is actually
+being done with its outputs.
+
+360
+00:25:35.520 --> 00:25:40.540
+So in order to do something useful with
+the outputs of the CPU, we connect them
+
+361
+00:25:40.540 --> 00:25:46.020
+to the memory unit, according to the
+contract that we described several times.
+
+362
+00:25:46.020 --> 00:25:50.800
+What we want to write, where we want
+to write it, and the, load bit.
+
+363
+00:25:50.800 --> 00:25:53.650
+And finally,
+we take the output of the memory, and
+
+364
+00:25:53.650 --> 00:25:58.080
+we connect it back into, the CPU,
+because many instructions,
+
+365
+00:25:58.080 --> 00:26:02.120
+that we want to operate on the memory and
+on not on the right into it.
+
+366
+00:26:03.310 --> 00:26:04.840
+And this is all.
+
+367
+00:26:04.840 --> 00:26:06.690
+This is our computer architecture.
+
+368
+00:26:06.690 --> 00:26:10.180
+All we have to add now is,
+the overall interface,
+
+369
+00:26:10.180 --> 00:26:15.040
+of the architecture, and
+the, output and input units.
+
+370
+00:26:15.040 --> 00:26:20.220
+And we see that the only thing that the
+user, of this computer sees when he works
+
+371
+00:26:20.220 --> 00:26:25.530
+with this computer is the display unit,
+the keyboard and the reset button.
+
+372
+00:26:26.820 --> 00:26:29.680
+And this, once again, wraps up,
+
+373
+00:26:29.680 --> 00:26:34.368
+everything that we want to say about,
+building this, computer architecture.
+
+374
+00:26:34.368 --> 00:26:39.580
+And when I look at this architecture and
+
+375
+00:26:39.580 --> 00:26:43.360
+reflect back on everything that, we did so
+
+376
+00:26:43.360 --> 00:26:50.150
+far I'm reminded by this quote about
+what it means to be beautiful.
+
+377
+00:26:50.150 --> 00:26:54.360
+We ascribe beauty to that which is simple,
+
+378
+00:26:54.360 --> 00:26:59.130
+which has no superfluous spots,
+which exactly answers its end,
+
+379
+00:26:59.130 --> 00:27:04.480
+which stands related to all things,
+which is the mean of many extremes.
+
+380
+00:27:04.480 --> 00:27:08.860
+This was said, 120 years ago by,
+Ralph Waldo Emerson.
+
+381
+00:27:08.860 --> 00:27:12.870
+I hope that you too agree with me that,
+
+382
+00:27:12.870 --> 00:27:18.000
+the Hack computer is beautiful
+according to this, standard.
+
+383
+00:27:18.000 --> 00:27:24.450
+And one reason why it is so aesthetic
+is because it's incredibly simple.
+
+384
+00:27:24.450 --> 00:27:28.090
+You know all you have to do in
+order to build this, computer here,
+
+385
+00:27:28.090 --> 00:27:31.390
+provided you built these three chips,
+
+386
+00:27:31.390 --> 00:27:36.270
+is write something like three lines of
+HDL code which is quite remarkable.
+
+387
+00:27:37.490 --> 00:27:42.310
+And so this exactly is what,
+what we're going to do in the next unit.
+
+388
+00:27:42.310 --> 00:27:46.820
+Now that we described the overall
+architecture, we will show you how to
+
+389
+00:27:46.820 --> 00:27:51.970
+actually build these, three chips,
+put them together, and have a Hack
+
+390
+00:27:51.970 --> 00:27:56.550
+computer that you can actually use to run
+every program that comes to your mind.

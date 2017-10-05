@@ -1,0 +1,781 @@
+WEBVTT
+
+1
+00:00:03.030 --> 00:00:08.000
+So, throughout this week, we talked
+about the computer architecture and
+
+2
+00:00:08.000 --> 00:00:15.040
+how the various shapes are synthesized
+into a single overall architecture and
+
+3
+00:00:15.040 --> 00:00:19.260
+in project five you actually have
+to build this architecture and
+
+4
+00:00:19.260 --> 00:00:22.040
+test it using our project materials.
+
+5
+00:00:22.040 --> 00:00:25.840
+So, the purpose of this unit is
+to give you all sorts of tips and
+
+6
+00:00:25.840 --> 00:00:27.420
+advice on how to do it.
+
+7
+00:00:28.980 --> 00:00:33.636
+Well, before we get started,
+I want to begin with some overall,
+
+8
+00:00:33.636 --> 00:00:37.710
+broad overview of what we have done so
+far.
+
+9
+00:00:37.710 --> 00:00:40.896
+Or what we are doing in
+the course in general.
+
+10
+00:00:40.896 --> 00:00:43.701
+Well, we are building a computer, and
+
+11
+00:00:43.701 --> 00:00:47.619
+the computer is implemented
+as a very high level chip.
+
+12
+00:00:47.619 --> 00:00:54.780
+And this chip makes use of two main
+components, CPU and a memory unit.
+
+13
+00:00:54.780 --> 00:01:01.640
+The memory, in turn, consists of several
+RAM units which are pieced together,
+
+14
+00:01:01.640 --> 00:01:08.360
+and every one of these RAM units is
+basically a collection of many registers.
+
+15
+00:01:08.360 --> 00:01:13.110
+The CPU also includes several registers,
+if you recall, the D register,
+
+16
+00:01:13.110 --> 00:01:14.360
+the A register.
+
+17
+00:01:14.360 --> 00:01:17.760
+It also includes a program counter, and,
+
+18
+00:01:17.760 --> 00:01:20.960
+of course,
+the ALU that we built in project two.
+
+19
+00:01:20.960 --> 00:01:24.600
+We can continue to resolve
+
+20
+00:01:24.600 --> 00:01:29.010
+these chip parts into simpler or
+more basic chip parts.
+
+21
+00:01:29.010 --> 00:01:34.191
+For example, the program counter
+makes use of a register and an adder,
+
+22
+00:01:34.191 --> 00:01:41.250
+and the ALU also makes use of
+another instance of an adder chip.
+
+23
+00:01:41.250 --> 00:01:46.430
+And, of course, all these chips at
+the end of the story, are based on
+
+24
+00:01:46.430 --> 00:01:51.780
+elementary logic gates, those that you
+built in the first week of the course.
+
+25
+00:01:51.780 --> 00:01:55.963
+And also, other chips, higher level chips,
+
+26
+00:01:55.963 --> 00:02:01.665
+make direct use every once in a while,
+of these lower level gates.
+
+27
+00:02:01.665 --> 00:02:06.120
+Now if we look at what I've
+just described, bottom up,
+
+28
+00:02:06.120 --> 00:02:10.500
+then in project one,
+we built the elementary logic gates.
+
+29
+00:02:10.500 --> 00:02:15.528
+In project two, we built the family
+of adders that led up to the ALU.
+
+30
+00:02:15.528 --> 00:02:24.950
+In project three, we built a family of
+registers that ended up with RAM units.
+
+31
+00:02:24.950 --> 00:02:31.750
+And finally, in this project, we are going
+to take the fruits of all this hard work,
+
+32
+00:02:31.750 --> 00:02:35.890
+and put it together into
+a complete computer system.
+
+33
+00:02:35.890 --> 00:02:41.240
+So, basically, we have to implement
+the CPU, the memory unit,
+
+34
+00:02:41.240 --> 00:02:46.480
+and then we have to implement the
+syntheses of these two high level chips,
+
+35
+00:02:46.480 --> 00:02:50.550
+into a complete working
+general purpose computer.
+
+36
+00:02:50.550 --> 00:02:52.850
+So, that's what we'll do in project five.
+
+37
+00:02:52.850 --> 00:02:57.220
+So, here is the abstraction
+of the Hack computer.
+
+38
+00:02:57.220 --> 00:03:01.810
+And here is also, the implementation
+that we discussed in the previous units.
+
+39
+00:03:01.810 --> 00:03:07.767
+And we see that the architecture
+is based on a CPU,
+
+40
+00:03:07.767 --> 00:03:14.620
+a data memory unit, and an instruction
+memory unit, which we called, ROM.
+
+41
+00:03:14.620 --> 00:03:17.460
+So, let us begin with the CPU.
+
+42
+00:03:17.460 --> 00:03:22.100
+Once again, here is the CPU,
+in in abstract terms.
+
+43
+00:03:22.100 --> 00:03:27.990
+We see we see here, the API, or
+the input and output units of the CPU.
+
+44
+00:03:27.990 --> 00:03:32.729
+And if we delve into the implementation,
+get this diagram,
+
+45
+00:03:32.729 --> 00:03:36.105
+that we discussed earlier in the course.
+
+46
+00:03:36.105 --> 00:03:43.083
+And here are some tips on how to
+build this relatively complex chip.
+
+47
+00:03:43.083 --> 00:03:47.495
+Well, first of all, if you look carefully,
+you will see that all the chip parts here
+
+48
+00:03:47.495 --> 00:03:50.559
+are chips that we've built
+before in previous projects.
+
+49
+00:03:50.559 --> 00:03:55.472
+So, it's just a matter of taking these
+chips off the shelf, so to speak,
+
+50
+00:03:55.472 --> 00:03:59.910
+and piecing them together
+in some clever way.
+
+51
+00:03:59.910 --> 00:04:01.050
+So how do you do it?
+
+52
+00:04:01.050 --> 00:04:04.840
+Well, another inspection of this diagram,
+
+53
+00:04:04.840 --> 00:04:10.970
+reveals that we have all these C
+control bits, that you see here.
+
+54
+00:04:10.970 --> 00:04:16.420
+And, most of these control bits
+come from the current instruction.
+
+55
+00:04:16.420 --> 00:04:21.520
+So here's, for example,
+a C instruction that consists,
+
+56
+00:04:21.520 --> 00:04:24.070
+if you recall, of several fields.
+
+57
+00:04:24.070 --> 00:04:29.258
+And I used color which is, obviously is,
+is meaningless for the computer but,
+
+58
+00:04:29.258 --> 00:04:34.766
+it helps me communicate with you so,
+we see an instruction coming in.
+
+59
+00:04:34.766 --> 00:04:38.743
+And your job as,
+the designer of this chip,
+
+60
+00:04:38.743 --> 00:04:43.496
+is to unpack these control bits and
+send them, or
+
+61
+00:04:43.496 --> 00:04:48.249
+route them, using HDL,
+to their correct destinations in
+
+62
+00:04:48.249 --> 00:04:53.207
+the various chip parts that
+make the overall architecture.
+
+63
+00:04:53.207 --> 00:04:58.339
+So, if you do this carefully,
+if you figure out which control bit has
+
+64
+00:04:58.339 --> 00:05:05.420
+to go where, you will basically glue all
+these parts together in a logical way and
+
+65
+00:05:05.420 --> 00:05:12.900
+and at the end of this synthesis,
+you will get an overall CPU architecture.
+
+66
+00:05:12.900 --> 00:05:16.710
+Now actually I, I really glossed over
+
+67
+00:05:16.710 --> 00:05:21.380
+quite a few details because it's not just
+a matter of taking these control date,
+
+68
+00:05:21.380 --> 00:05:23.950
+bits and
+sending them to some destinations.
+
+69
+00:05:23.950 --> 00:05:29.120
+You may have to add some logic
+that does some processing
+
+70
+00:05:29.120 --> 00:05:34.248
+of some of these control bits,
+in order to achieve the desired effect.
+
+71
+00:05:34.248 --> 00:05:36.590
+And also bear in mind,
+
+72
+00:05:36.590 --> 00:05:40.110
+that there are also some control
+bits that come out of the ALU.
+
+73
+00:05:40.110 --> 00:05:44.890
+If you look at the diagram,
+I actually forgot to circle them as well.
+
+74
+00:05:44.890 --> 00:05:49.980
+These control bits also play an important
+role in in the overall architecture.
+
+75
+00:05:49.980 --> 00:05:54.730
+And once again, you have to write some
+HDL logic that takes these control bits,
+
+76
+00:05:54.730 --> 00:05:58.987
+combines them with some other information
+that comes from the instruction, and and
+
+77
+00:05:58.987 --> 00:06:03.760
+piece them together in a way that
+achieves the desired effect.
+
+78
+00:06:03.760 --> 00:06:06.584
+Now, we have intentionally,
+
+79
+00:06:06.584 --> 00:06:11.250
+we haven't given you exact
+instructions on how to do it.
+
+80
+00:06:11.250 --> 00:06:17.680
+And intentionally, we just use this
+catch-all C label, because we, we want you
+
+81
+00:06:17.680 --> 00:06:22.430
+to think about it and figure out yourself
+how to put all these things together.
+
+82
+00:06:22.430 --> 00:06:27.540
+Once you do it, you will achieve
+the overall architecture of the CPU.
+
+83
+00:06:29.006 --> 00:06:32.948
+Here is also the stub file
+that we are giving you.
+
+84
+00:06:32.948 --> 00:06:36.861
+The stub file contains,
+you know the documentation of the CPU,
+
+85
+00:06:36.861 --> 00:06:39.540
+the names of the input and
+output units, and
+
+86
+00:06:39.540 --> 00:06:44.344
+then obviously you have to provide
+the the missing implementation.
+
+87
+00:06:44.344 --> 00:06:49.024
+All right, so, moving along,
+we have resolved the CPU, and
+
+88
+00:06:49.024 --> 00:06:52.690
+the next thing that I want to
+discuss is the memory unit.
+
+89
+00:06:52.690 --> 00:06:57.797
+The data memory unit which is the,
+the unit that contains the,
+
+90
+00:06:57.797 --> 00:07:03.627
+the running program and the data that
+the program generates, the variables.
+
+91
+00:07:03.627 --> 00:07:09.130
+And in a higher level language objects
+arrays, and so on and so forth.
+
+92
+00:07:09.130 --> 00:07:13.960
+All right, so
+this is the memory abstraction.
+
+93
+00:07:13.960 --> 00:07:19.271
+It's a single address
+space that has an in,
+
+94
+00:07:19.271 --> 00:07:22.460
+an address input, and an out, output.
+
+95
+00:07:22.460 --> 00:07:27.591
+And it also has this nice side
+effect of refreshing the screen and
+
+96
+00:07:27.591 --> 00:07:32.200
+probing what the user is
+is doing with the keyboard.
+
+97
+00:07:32.200 --> 00:07:37.415
+Now the overall address
+space of of the Hack
+
+98
+00:07:37.415 --> 00:07:41.557
+memory consists of three logical segments.
+
+99
+00:07:41.557 --> 00:07:47.820
+Now there's no physical separation, but
+there's a logical separation, if you will.
+
+100
+00:07:47.820 --> 00:07:51.800
+So the first 16K of
+the memory are dedicated to
+
+101
+00:07:53.220 --> 00:07:57.030
+the running program and, and
+the data that it generates.
+
+102
+00:07:57.030 --> 00:08:03.300
+The next 8K of the memory
+are dedicated to a screen memory map,
+
+103
+00:08:03.300 --> 00:08:10.460
+and the last register in the memory is
+represents the keyboard memory map.
+
+104
+00:08:10.460 --> 00:08:12.390
+So, how do we build it?
+
+105
+00:08:12.390 --> 00:08:19.760
+Well, we have to realize this abstraction
+using chips that we already built before.
+
+106
+00:08:19.760 --> 00:08:24.480
+And here is some high level
+diagram of this, architecture.
+
+107
+00:08:24.480 --> 00:08:26.020
+So we have three basic chips.
+
+108
+00:08:26.020 --> 00:08:30.810
+We have the RAM chip that
+we built in project three.
+
+109
+00:08:30.810 --> 00:08:36.260
+Then we have a built-in screen chip which
+essentially is just a regular memory chip,
+
+110
+00:08:36.260 --> 00:08:39.570
+so it's not really terribly
+interesting to implement it,
+
+111
+00:08:39.570 --> 00:08:41.650
+if you implemented the RAM before.
+
+112
+00:08:41.650 --> 00:08:46.730
+But, it has the very nice side effect
+of refreshing the physical screen.
+
+113
+00:08:46.730 --> 00:08:52.810
+And finally, we have a humble
+register called, keyboard which
+
+114
+00:08:52.810 --> 00:08:59.040
+holds the currently pressed, the scan
+code of the currently pressed key.
+
+115
+00:08:59.040 --> 00:09:03.650
+So, you have to write HDL code
+
+116
+00:09:03.650 --> 00:09:08.790
+that takes an incoming address,
+whatever this address may, be and
+
+117
+00:09:08.790 --> 00:09:15.780
+funnel this address to the right chip part
+within the the overall address space.
+
+118
+00:09:15.780 --> 00:09:20.490
+So if the address is below 16k,
+well, there's nothing to do with it.
+
+119
+00:09:20.490 --> 00:09:25.640
+You simply retrieve the right
+register from the RAM chip part.
+
+120
+00:09:25.640 --> 00:09:28.852
+But if the address is between 16,384, and
+
+121
+00:09:28.852 --> 00:09:33.784
+24,575, then you have to do something
+to take this address and, and
+
+122
+00:09:33.784 --> 00:09:39.590
+route it to the right address
+in the screen, memory chip.
+
+123
+00:09:39.590 --> 00:09:43.293
+And finally, if the address is 24,576,
+
+124
+00:09:43.293 --> 00:09:49.230
+then you want to route it to
+the to the keyboard memory map.
+
+125
+00:09:49.230 --> 00:09:53.977
+So, that's basically what your HDL
+code has to do, and if you will do it,
+
+126
+00:09:53.977 --> 00:09:59.400
+you will achieve this glue that
+holds together these chip parts and
+
+127
+00:09:59.400 --> 00:10:03.780
+delivers the overall
+functionality of the data memory.
+
+128
+00:10:03.780 --> 00:10:07.720
+All right, so we've resolved the CPU and
+the memory, and
+
+129
+00:10:07.720 --> 00:10:12.950
+the only thing that remains to do is
+to figure out how to implement the ROM.
+
+130
+00:10:12.950 --> 00:10:20.590
+Well the ROM is really
+a simpler version of the RAM.
+
+131
+00:10:20.590 --> 00:10:27.780
+It's, it's just, it's, it's a RAM chip and
+yet, it's, it's a read-only device.
+
+132
+00:10:27.780 --> 00:10:31.100
+So, it's actually easier
+to build than a RAM chip.
+
+133
+00:10:31.100 --> 00:10:35.980
+And therefore, we decided not to bother
+with with asking you to build it,
+
+134
+00:10:35.980 --> 00:10:41.090
+and we supply it as a built-in chip.
+
+135
+00:10:41.090 --> 00:10:42.650
+We didn't do it only for that reason.
+
+136
+00:10:42.650 --> 00:10:46.980
+We also, we, we, we supplied built-in
+version of the ROM because we also
+
+137
+00:10:48.080 --> 00:10:54.120
+endode, endowed this built-in chip
+with the ability to load the program
+
+138
+00:10:54.120 --> 00:10:57.280
+within the the hardware simulator.
+
+139
+00:10:57.280 --> 00:11:00.590
+So it's very convenient that we
+have this built-in chip, and
+
+140
+00:11:00.590 --> 00:11:06.560
+all you have to do is take it and
+plug it into the overall architecture.
+
+141
+00:11:06.560 --> 00:11:11.310
+So this is probably the easiest
+thing to do in this project.
+
+142
+00:11:11.310 --> 00:11:12.030
+So, that's it.
+
+143
+00:11:12.030 --> 00:11:17.180
+We we built all the the three components
+
+144
+00:11:17.180 --> 00:11:22.190
+that make up the architecture and
+the only thing that remains is to actually
+
+145
+00:11:22.190 --> 00:11:27.960
+effect in HDL the very diagram
+that you see here in front of you.
+
+146
+00:11:27.960 --> 00:11:33.250
+So, we have to write a few HDL statements
+that connect the CPU to the memory,
+
+147
+00:11:33.250 --> 00:11:39.330
+and the ROM 32K, in the same way
+that you see here in the diagram.
+
+148
+00:11:40.390 --> 00:11:41.500
+How do we do it?
+
+149
+00:11:41.500 --> 00:11:46.540
+Well, we start with a, a stub file that
+gives you the API of the computer, and
+
+150
+00:11:46.540 --> 00:11:51.370
+then you write a few lines
+of HDL code that basically
+
+151
+00:11:52.430 --> 00:11:54.760
+implement this diagram in HDL.
+
+152
+00:11:57.420 --> 00:12:01.754
+In order to do this project, as usual,
+you have to go to the website.
+
+153
+00:12:01.754 --> 00:12:06.152
+Read the project page that gives
+you all sorts of the documentation
+
+154
+00:12:06.152 --> 00:12:08.970
+about the files that
+you are going to need.
+
+155
+00:12:08.970 --> 00:12:11.880
+All these files are already
+available on your computer,
+
+156
+00:12:11.880 --> 00:12:15.710
+as part of the NAND to Tetris folder.
+
+157
+00:12:15.710 --> 00:12:20.340
+So you're all set and you have
+everything you need in order to finally
+
+158
+00:12:21.460 --> 00:12:23.290
+complete the computer architecture.
+
+159
+00:12:23.290 --> 00:12:27.300
+There are a few more resources, as usual
+that you are, you're welcome to use.
+
+160
+00:12:27.300 --> 00:12:28.950
+And, that's it.
+
+161
+00:12:28.950 --> 00:12:34.370
+If you do that you will end
+up having a running computer.
+
+162
+00:12:34.370 --> 00:12:39.160
+And and this will be the end of
+the hardware part of this course.
+
+163
+00:12:40.380 --> 00:12:42.810
+The next unit as usual, is Perspectives.

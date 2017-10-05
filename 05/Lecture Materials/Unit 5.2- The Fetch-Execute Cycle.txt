@@ -1,0 +1,112 @@
+In this unit, we're going to talk about
+the very basic thing that a computer does, which is execute one
+instruction after the other. We're going to look more specifically
+at how exactly is that done. Well, really, it's very simple. You first fetch the instruction
+that you need to execute, and then you just execute it. And then you repeat. And that's the only thing that a CPU does. Fetch an instruction, execute it, fetch
+another instruction, execute it, and so on and so forth. So let us look specifically at each of
+these two stages, what it exactly happens there and how does that translate
+into what happens in hardware. So let's first talk about fetching. So, how do you get the neck,
+next instruction that you need to execute. Well, where is the next
+instruction located at? It's in the program memory,
+it's in the memory. Where in the memory? In the address that's specified
+by our program counter, probably. So, we need to basically put
+the location of the next instruction, of the instruction that
+you want to execute next, into the address of the program memory. And then we need to read
+the contents of that memory and then we will get the basic
+instructions that we need to execute, the code of the instructions
+that we need to execute. The next instruction will
+usually just be the one after the one that we just did in the previous. That is if we now finished
+instruction number eight, usually the next instruction
+will be instruction number nine. Sometimes we already know that we jump and
+we're going to need, want to execute the different instruction. So how do we actually go about putting
+the address of the next instruction into the address input
+of the program memory? Well, we're going to have to put it
+somewhere and that's going to be into some counter, into some register and that
+is usually called the program counter. So basically the hard words of exec,
+executes the fetch, if you wish, part of the cycle is
+the following, there is a program counter, when we need to jump into a new location
+or we need to just increase and go to the next instruction, we need
+to manipulate the program counter so it will have the address
+of the next instruction. The output of the program counter
+feeds into the address specification of our program memory. And then,
+out of the program memories output comes the actual code of instructions
+that we need to execute. So that is basically what happens in the
+fetch part of the fetch and execute cycle. So now, once we have the code of the
+instruction, now we need to execute it. So the instruction code itself has all the
+specifics of what we're going to do now. Which a,
+calculations that we're supposed to do. Are we touching this register or
+that register and so on. And whether we want to,
+need to jump afterwards and so on. So usually all that information is coded
+somehow inside the instructions that we already have because that we
+got it in the instruction part in the fetch part of the cycle. And usually the way it's
+coded is in a simple way. So that is basically,
+different parts of the instruction, bits, actually control the different
+parts that we need to do right now. Sometimes it's more complicated, sometimes
+it's more simple but that's a basic idea. So the basic execution executing
+the current instruction basically mean taking the bits from the instruction
+code that specifies what to do, and actually doing what needs to be done. Looking at it in the hardware phase, from the hardware point of view, the
+instruction we already got from our fetch, that is now going to feed into the control
+bus of our CPU, of our computer. And that control bus,
+basically controls everything. It tell the ALU what instruction
+to compute, to add numbers, subtract them, or so on. It also tells where do the,
+data pieces come from. Do they come from which which register or
+from the data memory or so on. So we basically have the instruction
+memory that we just fetched, basically tells us exactly each part of the system
+what to do right now in the execute cycle. And that really controls whether
+we read from the data memory, whether we read from the registers, what
+do we compute, where to write and so on? Of course there are many details. How is that exactly done? How do we, how does the bytes from
+the instructions specifically tell the ALU what to do which
+registers to choose and so on? That is best a, viewed through
+the lens of a particular computer. Specifically we will actually
+get into these details when we talk about our computer,
+about the HACK computer. And that is what we are going to do,
+be doing the next few units where you're actually going to see
+how we actually control each and every part of the system
+from the instruction bits. So, we're not going to delve deeper
+into the specifics of this part, which is really the most, more, most of
+the work that is done and by the computer. But rather, I want to take a step
+backwards and look at a certain problem that I've sort of glossed over so
+far, and that is the fact that we really have a clash between
+the fetch cycle and the execute cycle. You see, both the program and
+the data reside in memory. In the fetch cycle, basically we
+need to get from the program memory, the next instruction. So we need to put into
+the address of the memory, the address of the next instruction and
+get the instructions output. On the other hand, in the execute cycle, we need to access data that
+also resides in memory. So we need to put into
+the address of the memory, the address of the data piece
+that we want to operate on, which has nothing to do with the program
+piece that gave us the instruction. And because we have a single memory,
+that is a clash, because what are we going to put into
+the address, are we going to put there, the pro, the address of the instruction,
+or is address of the data piece? We need to do both and that's a problem. So how do we solve that? Well, basically we are going to do one
+after the other, that is the usual way. How do we do one after the other? There's going to be a multiplexer that
+feeds into the address of the memory. In the first part of the cycle in the
+fetch cycle, we're going to actually set the multiplexer to plug into
+the address input of the memory, the program counter that is
+the location of the next instruction. While in the execute cycle,
+the multiplexer will actually set the memory to actually point into
+the data address that we need to access. And of course, the output of
+the memory will go into both places. Both into the, the bit part of this
+system that needs instruction and into the part of the system that are used
+inside when executing to actually put information there. A, you may wonder, okay, so
+how do we do both of them together? Well, when you look at it
+you really need to remember the instruction from the fetch cycle
+to used for the execution cycle. So that is what we're going to do. When we actually a,
+are in the fetch cycle, we put the address of the next
+instruction, we get the next instruction, and then we need to remember it
+inside an instruction register. And that instruction register
+is exactly what is remains holding the value of the instruction that
+we're now executing in the execute cycle. And then of course, in the execute cycle
+now we have the instruction already stored in this register. And we can work with all the information
+that we need a, for the execute cycle using the data memory that is being
+addressed in the second part of the cycle. So, this is the usual way it's done. Now there is a shortcut and that is simply keep the two different
+parts of the memory separate. That is,
+have one unit holding the data memory and another unit holding the program memory. Each one of these units
+has its own address. And then we don't need to worry about,
+a, be, between switching between them,
+a, as we've just shown. Eh, this shortcut makes everything simple. It is sometimes called the Harvard
+architecture, but we just view it as a variant of the von Neumann Architecture
+and keep using it due to its simplicity. So, now we've basically finished
+talking about the general a, architecture of computers. How in general do you actually a,
+construct a computer? What we're going to switch in
+the next unit is talking specifically about our HACK computer. And how it is built a, exactly.

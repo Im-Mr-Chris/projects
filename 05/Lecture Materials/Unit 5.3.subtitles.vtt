@@ -1,0 +1,1875 @@
+WEBVTT
+
+1
+00:00:04.631 --> 00:00:08.537
+The central processing unit,
+also called the CPU,
+
+2
+00:00:08.537 --> 00:00:14.140
+is the centerpiece of every
+computer hardware architecture.
+
+3
+00:00:14.140 --> 00:00:16.844
+It is the hub of computation, if you will,
+
+4
+00:00:16.844 --> 00:00:21.594
+because this is where all the calculations
+of the machine take place.
+
+5
+00:00:21.594 --> 00:00:25.110
+And it is also the seat of control.
+
+6
+00:00:25.110 --> 00:00:30.820
+This is where decisions are made about
+which instruction should be fetched and
+
+7
+00:00:30.820 --> 00:00:33.090
+executed next.
+
+8
+00:00:33.090 --> 00:00:37.720
+In this unit,
+we're going to talk about the Hack CPU,
+
+9
+00:00:37.720 --> 00:00:42.430
+the specification of the, of the CPU, and
+how we actually are going to build it.
+
+10
+00:00:43.450 --> 00:00:48.180
+Now, as usual, it always pays off
+to start with the abstraction.
+
+11
+00:00:48.180 --> 00:00:52.360
+So we can think about the Hack CPU
+as some sort of a black box magic
+
+12
+00:00:52.360 --> 00:00:56.590
+that performs two truly remarkable things.
+
+13
+00:00:56.590 --> 00:01:01.510
+First of all, well, it's a 16-bit
+processor, like, the entire computer.
+
+14
+00:01:01.510 --> 00:01:06.240
+And the first thing that it can do is,
+given a certain instruction,
+
+15
+00:01:06.240 --> 00:01:10.450
+written in the Hack language,
+it will execute this instruction.
+
+16
+00:01:10.450 --> 00:01:15.990
+Now, this is something which in my
+opinion is truly remarkable and dramatic.
+
+17
+00:01:15.990 --> 00:01:19.483
+Because up until this point,
+when you wrote programs,
+
+18
+00:01:19.483 --> 00:01:24.016
+the programs existed on a piece of paper,
+they were completely static,
+
+19
+00:01:24.016 --> 00:01:27.956
+they were simply a bunch of symbols
+that described some fantasy
+
+20
+00:01:27.956 --> 00:01:31.999
+of the programmer who wants to
+actually make something happen.
+
+21
+00:01:31.999 --> 00:01:35.005
+But now,
+we can actually take these programs and
+
+22
+00:01:35.005 --> 00:01:38.980
+put it into a machine that
+turns them into reality.
+
+23
+00:01:38.980 --> 00:01:42.300
+The programs become music
+that you can listen to or
+
+24
+00:01:42.300 --> 00:01:44.180
+video clips that you can watch.
+
+25
+00:01:44.180 --> 00:01:47.690
+Or some airline reservation system or
+whatever.
+
+26
+00:01:47.690 --> 00:01:53.570
+So the CPU is this very unique and
+special agent
+
+27
+00:01:53.570 --> 00:01:59.240
+that takes this program specification and
+turns it into a reality.
+
+28
+00:01:59.240 --> 00:02:02.365
+And if this were not
+enough in its own right,
+
+29
+00:02:02.365 --> 00:02:06.685
+the CPU can also do something
+not less remarkable.
+
+30
+00:02:06.685 --> 00:02:11.659
+In the process of executing the current
+instruction, it also figures out somehow
+
+31
+00:02:11.659 --> 00:02:17.700
+which instruction should be executed next
+in the program which is currently running.
+
+32
+00:02:17.700 --> 00:02:21.610
+And, of course, since we talk about
+the Hack computer, we assume all these
+
+33
+00:02:21.610 --> 00:02:26.550
+programs are written in the Hack
+machine language that we studied or
+
+34
+00:02:26.550 --> 00:02:28.800
+looked at in, in week four.
+
+35
+00:02:28.800 --> 00:02:33.080
+So given that this is the CPU's
+abstraction, the next thing that I'd like
+
+36
+00:02:33.080 --> 00:02:38.460
+to discuss is the more detailed
+specification of this apparatus.
+
+37
+00:02:38.460 --> 00:02:42.370
+Well, the first thing that we have to
+remember is that the CPU does not work
+
+38
+00:02:42.370 --> 00:02:43.670
+in isolation.
+
+39
+00:02:43.670 --> 00:02:47.500
+It is connected to other
+devices Inside the computer.
+
+40
+00:02:47.500 --> 00:02:51.370
+In particular,
+in this particular Hack architecture,
+
+41
+00:02:51.370 --> 00:02:56.040
+the CPU is connected both to the
+instruction memory and to the data memory.
+
+42
+00:02:56.040 --> 00:03:02.060
+With that in mind, here is the specific
+input and output connections of the CPU.
+
+43
+00:03:02.060 --> 00:03:07.381
+And let us begin to review them from
+left to right and from top to bottom.
+
+44
+00:03:07.381 --> 00:03:08.863
+So, first of all,
+
+45
+00:03:08.863 --> 00:03:14.870
+we have three inputs coming from
+three completely different sources.
+
+46
+00:03:14.870 --> 00:03:19.390
+First of all,
+there is the 16-bit data value, which is
+
+47
+00:03:19.390 --> 00:03:25.030
+the value of the currently
+selected data memory register.
+
+48
+00:03:25.030 --> 00:03:28.820
+This is the value that the CPU
+is going to operate on.
+
+49
+00:03:28.820 --> 00:03:31.260
+Now, what exactly do
+we want the CPU to do?
+
+50
+00:03:31.260 --> 00:03:36.309
+Well, the next input,
+which we decided to call instruction,
+
+51
+00:03:36.309 --> 00:03:41.360
+which is a very sensible name,
+describes a 16 bit input which
+
+52
+00:03:41.360 --> 00:03:46.144
+is the value of the selected
+instruction memory register.
+
+53
+00:03:46.144 --> 00:03:48.853
+And remember that at any
+given point of time,
+
+54
+00:03:48.853 --> 00:03:53.202
+there is always a selected register
+in the instruction memory, and
+
+55
+00:03:53.202 --> 00:03:58.146
+there is always a selected memory
+register in the data memory.
+
+56
+00:03:58.146 --> 00:04:00.542
+So always something comes into the CPU.
+
+57
+00:04:00.542 --> 00:04:05.460
+The third input,
+which we decided to call the reset,
+
+58
+00:04:05.460 --> 00:04:08.900
+is a one bit input which I will
+discuss later in this unit.
+
+59
+00:04:10.200 --> 00:04:13.731
+On the right hand side,
+we see the outputs of the ALU.
+
+60
+00:04:13.731 --> 00:04:18.357
+So, first of all, if the ALU wants to
+write something to the data memory,
+
+61
+00:04:18.357 --> 00:04:21.610
+it has to specify three different things.
+
+62
+00:04:21.610 --> 00:04:24.600
+Number one,
+what is it that we want to write.
+
+63
+00:04:24.600 --> 00:04:31.530
+And this is stored in or
+admitted through an output called outM.
+
+64
+00:04:31.530 --> 00:04:34.420
+Number two, where do we want to write it.
+
+65
+00:04:34.420 --> 00:04:40.800
+We have to provide an address, and this
+is the the job of the next data output.
+
+66
+00:04:40.800 --> 00:04:46.190
+And, the third output is a load bit
+that enables the data memory for
+
+67
+00:04:46.190 --> 00:04:47.420
+write operations.
+
+68
+00:04:47.420 --> 00:04:52.770
+So these are the three data outputs,
+if you will, of the CPU.
+
+69
+00:04:52.770 --> 00:04:56.231
+In addition,
+there's one extremely important output,
+
+70
+00:04:56.231 --> 00:05:01.463
+which we decided to call PC for reasons
+that will become clear in a few minutes.
+
+71
+00:05:01.463 --> 00:05:07.121
+And this output holds, by some sort of
+magic, the address of the next instruction
+
+72
+00:05:07.121 --> 00:05:11.970
+that has to be fetched and executed
+in the next cycle of this computer.
+
+73
+00:05:14.040 --> 00:05:16.790
+So how do we implement this magic?
+
+74
+00:05:16.790 --> 00:05:21.170
+How do we make all these
+good things actually happen?
+
+75
+00:05:21.170 --> 00:05:23.570
+Well, here is one way of doing it.
+
+76
+00:05:23.570 --> 00:05:29.120
+This is our proposed implementation of
+the functionality that we just described.
+
+77
+00:05:29.120 --> 00:05:32.850
+It is not the only way to build a CPU,
+but this is a, a pretty good one,
+
+78
+00:05:32.850 --> 00:05:37.350
+because it's very elegant and
+simple and relatively easy to do.
+
+79
+00:05:37.350 --> 00:05:42.900
+So before we get into the actual
+details of this architecture,
+
+80
+00:05:42.900 --> 00:05:44.920
+let us look at the interface.
+
+81
+00:05:44.920 --> 00:05:48.490
+If we look at the interface
+of this hardware diagram,
+
+82
+00:05:48.490 --> 00:05:52.800
+we see that it is 100% identical
+to what we saw before.
+
+83
+00:05:52.800 --> 00:05:56.542
+We have three inputs coming in and
+we have four outputs coming out.
+
+84
+00:05:57.610 --> 00:05:59.520
+And, given that we made this observation,
+
+85
+00:05:59.520 --> 00:06:04.280
+we can now delve into the details
+of the actual architecture.
+
+86
+00:06:04.280 --> 00:06:07.510
+Another important thing that we have to
+look at before we begin to understand
+
+87
+00:06:07.510 --> 00:06:11.980
+before we begin to understand what is
+going on here, is that within this
+
+88
+00:06:11.980 --> 00:06:17.780
+architecture, we have many labels,
+labeled by the catch all
+
+89
+00:06:17.780 --> 00:06:22.950
+symbol C, which I use to represent
+the notion of control bits.
+
+90
+00:06:22.950 --> 00:06:26.870
+So in order to make all
+these chips work together,
+
+91
+00:06:26.870 --> 00:06:30.500
+the designer of the CPU has to
+make sure the different bits,
+
+92
+00:06:30.500 --> 00:06:34.730
+different control bits, arrive to
+the right locations, and these multiple
+
+93
+00:06:34.730 --> 00:06:40.440
+messages together will cause the CPU to do
+what it's what it's supposed to be doing.
+
+94
+00:06:41.610 --> 00:06:46.330
+Now, if you look at this architecture,
+you know, after the first minute or
+
+95
+00:06:46.330 --> 00:06:51.900
+two of bewilderment, you will realize that
+everything here is extremely standard.
+
+96
+00:06:51.900 --> 00:06:56.100
+You see the LU,
+which you built in in project two.
+
+97
+00:06:56.100 --> 00:06:59.860
+We see three registers, which we call A,
+D and [COUGH] and PC, and
+
+98
+00:06:59.860 --> 00:07:06.250
+these registers are identicals to chips
+that you built in in project three.
+
+99
+00:07:06.250 --> 00:07:12.210
+And we see two muxes, which we built in in
+week one of the course, in project one.
+
+100
+00:07:12.210 --> 00:07:15.950
+And therefore, putting together this
+architecture is just a matter of
+
+101
+00:07:15.950 --> 00:07:21.990
+assembling chip parts that you already
+built in previous weeks in this course.
+
+102
+00:07:21.990 --> 00:07:26.370
+Another thing that you see in this
+diagram is all these C labels,
+
+103
+00:07:26.370 --> 00:07:31.680
+which indicate control bits that go
+into various locations in various chips.
+
+104
+00:07:31.680 --> 00:07:34.866
+Now, we have intentionally left those
+
+105
+00:07:34.866 --> 00:07:39.376
+the specification of these
+control bits somewhat opaque,
+
+106
+00:07:39.376 --> 00:07:44.769
+because we want you to figure out how to
+actually piece all these things together.
+
+107
+00:07:44.769 --> 00:07:48.838
+And we'll have much more to
+say about it in the unit that
+
+108
+00:07:48.838 --> 00:07:52.829
+discusses how we actually
+build this architecture.
+
+109
+00:07:52.829 --> 00:07:54.230
+Now, before we build it,
+
+110
+00:07:54.230 --> 00:07:57.427
+we have to describe what this
+architecture actually does.
+
+111
+00:07:57.427 --> 00:08:00.199
+And in doing so I find it kind of,
+
+112
+00:08:00.199 --> 00:08:04.970
+interesting to think about this
+architecture as an orchestra.
+
+113
+00:08:04.970 --> 00:08:09.820
+An orchestra that works together, many
+different instruments in order to produce
+
+114
+00:08:09.820 --> 00:08:15.110
+some great symphony and the symphony is
+the execution of the current program.
+
+115
+00:08:15.110 --> 00:08:16.500
+You know, just like a regular orchestra,
+
+116
+00:08:16.500 --> 00:08:21.160
+it can, it can play many
+different pieces of music.
+
+117
+00:08:21.160 --> 00:08:26.690
+And the current program determines
+what it actually executes.
+
+118
+00:08:26.690 --> 00:08:31.600
+So I would like in the remainder
+of this unit to focus on different
+
+119
+00:08:31.600 --> 00:08:34.160
+sections in this architecture.
+
+120
+00:08:34.160 --> 00:08:39.110
+And let us begin with this section that
+deals with the current instruction.
+
+121
+00:08:39.110 --> 00:08:43.420
+So zooming in on this section,
+we see that it consists,
+
+122
+00:08:43.420 --> 00:08:46.860
+mainly of, a register called A.
+
+123
+00:08:46.860 --> 00:08:51.070
+And an instruction input that connects
+to this register through a multiplexer.
+
+124
+00:08:51.070 --> 00:08:55.400
+And here is,
+an A instruction arriving to the,
+
+125
+00:08:55.400 --> 00:08:58.910
+machine in the current cycle or
+some cycle.
+
+126
+00:08:58.910 --> 00:09:03.990
+And here is also the symbolic mnemonic
+of the same instruction which is
+
+127
+00:09:03.990 --> 00:09:09.470
+easier to read but obviously the computer
+doesn't care about it all this is just for
+
+128
+00:09:09.470 --> 00:09:11.870
+communications between me and you.
+
+129
+00:09:11.870 --> 00:09:19.540
+So we see that this instruction seeks to
+load the value 3,001 into a register.
+
+130
+00:09:19.540 --> 00:09:21.820
+And of course, to do everything in binary.
+
+131
+00:09:21.820 --> 00:09:26.990
+So in order to carry out this instruction,
+the CPU has to do several things.
+
+132
+00:09:26.990 --> 00:09:30.200
+First of all,
+it has to decode the instruction.
+
+133
+00:09:30.200 --> 00:09:32.760
+It has to take the 16-bit value and
+
+134
+00:09:32.760 --> 00:09:38.100
+separate it into an op-code and
+a 15-bit address or a 15-bit value.
+
+135
+00:09:38.100 --> 00:09:40.940
+By the way,
+how do we know that it's an A instruction?
+
+136
+00:09:40.940 --> 00:09:42.067
+Well, we can look at the op-code.
+
+137
+00:09:42.067 --> 00:09:45.970
+The op-code is zero, and according to
+the heck machine language specification
+
+138
+00:09:45.970 --> 00:09:47.850
+it means that it's an A-instruction.
+
+139
+00:09:47.850 --> 00:09:50.380
+So the CPU says, aha,
+I know what to do with it.
+
+140
+00:09:50.380 --> 00:09:56.210
+I have to take the next 15-bit,
+value and put it inside the A register.
+
+141
+00:09:56.210 --> 00:09:59.900
+And notice that this is exactly what the,
+the gate diagram does.
+
+142
+00:09:59.900 --> 00:10:05.820
+The the 16 bit values go through
+the register and, and into the register.
+
+143
+00:10:05.820 --> 00:10:08.320
+Another thing that the CPU does and
+
+144
+00:10:08.320 --> 00:10:12.350
+we can not see it in this diagram
+in order to avoid clutter.
+
+145
+00:10:12.350 --> 00:10:13.800
+But this is something very simple.
+
+146
+00:10:13.800 --> 00:10:19.690
+It takes the output of the A-register and
+admits it outside
+
+147
+00:10:19.690 --> 00:10:25.850
+the [COUGH] the CPU via the output which
+we call I think address M or M address.
+
+148
+00:10:25.850 --> 00:10:29.730
+You can look it up in the overall
+architecture of the computer.
+
+149
+00:10:29.730 --> 00:10:33.800
+So this is how the CPU
+handles an A instruction.
+
+150
+00:10:33.800 --> 00:10:36.450
+Now the next thing that we
+are going to look at is how
+
+151
+00:10:36.450 --> 00:10:40.345
+the CPU handles a C instruction
+because after all in this,
+
+152
+00:10:40.345 --> 00:10:44.360
+hack machine language we have
+two generic instruction types.
+
+153
+00:10:44.360 --> 00:10:46.460
+An A instruction and a C instruction.
+
+154
+00:10:46.460 --> 00:10:50.664
+So we have to be able to entertain and
+handle any one of these instructions.
+
+155
+00:10:50.664 --> 00:10:52.121
+Well the C-instruction,
+
+156
+00:10:52.121 --> 00:10:55.990
+like the A-instruction,
+consists of different fields.
+
+157
+00:10:55.990 --> 00:10:59.200
+And the first field is the op-code
+which happens to be one.
+
+158
+00:10:59.200 --> 00:11:03.160
+This is how the CPU can tell
+that this is a C-instruction.
+
+159
+00:11:03.160 --> 00:11:05.720
+But in addition to this,
+we have several other fields.
+
+160
+00:11:05.720 --> 00:11:07.460
+And we can see them, we can see them more,
+
+161
+00:11:07.460 --> 00:11:13.680
+more clearly if we look at the symbolic
+manifestation of the same instruction.
+
+162
+00:11:13.680 --> 00:11:17.945
+Now notice that I'm using the color coding
+to associate the bits with the symbolic
+
+163
+00:11:17.945 --> 00:11:23.640
+mnemonics but these colors obviously are
+completely meaningless for the computer.
+
+164
+00:11:23.640 --> 00:11:28.300
+They are just a way for us to,
+to communicate more easily in the course.
+
+165
+00:11:28.300 --> 00:11:31.950
+So how does the CPU handle
+with such an instruction?
+
+166
+00:11:31.950 --> 00:11:35.450
+Well, you may have guessed the first
+thing that needs to be done is to decode
+
+167
+00:11:35.450 --> 00:11:38.910
+the instruction.So the ALU takes this,
+
+168
+00:11:38.910 --> 00:11:44.330
+16 bit value and
+it decodes it into four different fields.
+
+169
+00:11:44.330 --> 00:11:49.690
+And these fields will later on be used,
+in order to, power up and
+
+170
+00:11:49.690 --> 00:11:53.640
+manipulate different elements
+inside the computer architecture.
+
+171
+00:11:53.640 --> 00:11:56.380
+What we discussed so far was how,
+
+172
+00:11:56.380 --> 00:12:01.440
+the CPU handles the instruction, but
+if you look at the gate diagram,
+
+173
+00:12:01.440 --> 00:12:06.720
+you'll see that the same
+A register can be also fed,
+
+174
+00:12:06.720 --> 00:12:12.330
+not necessarily from the instruction
+input, but rather from the ALU output.
+
+175
+00:12:12.330 --> 00:12:16.880
+So we have to decide in some cases we
+want the A register to be fed from
+
+176
+00:12:16.880 --> 00:12:22.270
+the instruction and in other cases we want
+the area to be fed from the ALU output.
+
+177
+00:12:22.270 --> 00:12:24.110
+No you may have guessed how we do it.
+
+178
+00:12:24.110 --> 00:12:28.820
+We know that in different situations we
+deal with two different constructions,
+
+179
+00:12:28.820 --> 00:12:32.490
+in some cases its an A instruction
+with a op-code of 0, and
+
+180
+00:12:32.490 --> 00:12:36.070
+in this case we want the input
+to come from the instruction.
+
+181
+00:12:36.070 --> 00:12:39.770
+In other cases its C instruction,
+with an op-code of 1, and
+
+182
+00:12:39.770 --> 00:12:44.950
+in this case we want to,
+to route the input of the A,
+
+183
+00:12:44.950 --> 00:12:49.300
+A register in such a way that
+the input will come from the ALU.
+
+184
+00:12:49.300 --> 00:12:54.190
+So it is the job of the CPU,
+designer to inspect
+
+185
+00:12:54.190 --> 00:12:59.460
+the op-code of the incoming instruction
+and decide from which source
+
+186
+00:12:59.460 --> 00:13:05.410
+the A register will take it's
+it's next contents so to speak.
+
+187
+00:13:05.410 --> 00:13:12.060
+Alright, so this is roughly how the CPU
+handles incoming instructions and
+
+188
+00:13:12.060 --> 00:13:16.100
+let's go back to the overall
+architecture and focus on
+
+189
+00:13:16.100 --> 00:13:20.960
+the next section that I would like to
+discuss which is the operation of the ALU,
+
+190
+00:13:20.960 --> 00:13:27.590
+which is by far the most, complex,
+part of this architecture.
+
+191
+00:13:27.590 --> 00:13:28.480
+All right.
+
+192
+00:13:28.480 --> 00:13:32.970
+Now, we see here, this, segment,
+that deals with the ALU, and
+
+193
+00:13:32.970 --> 00:13:39.540
+we see a C instruction coming in, instead
+of the instruction that we saw before.
+
+194
+00:13:39.540 --> 00:13:44.630
+And let us remember that the C instruction
+consists of different fields of bits,
+
+195
+00:13:44.630 --> 00:13:48.110
+each one of which means something else.
+
+196
+00:13:48.110 --> 00:13:54.330
+And another thing that we have to remember
+is that the ALU is a combinational chip.
+
+197
+00:13:54.330 --> 00:13:58.948
+It always computes something,
+there's always some inputs coming in and
+
+198
+00:13:58.948 --> 00:14:02.450
+there's always some output coming out.
+
+199
+00:14:02.450 --> 00:14:04.220
+And when you look at the,
+
+200
+00:14:04.220 --> 00:14:09.390
+diagram you see that the inputs of
+the ALU come from two different sources.
+
+201
+00:14:09.390 --> 00:14:13.360
+One of them is the D register,
+the current value of the D register and
+
+202
+00:14:13.360 --> 00:14:16.830
+the other one is either
+the value of the A register or
+
+203
+00:14:16.830 --> 00:14:20.590
+the value of the selected memory,
+memory register.
+
+204
+00:14:20.590 --> 00:14:24.140
+And there is a multiplexer that
+takes care of this decision
+
+205
+00:14:24.140 --> 00:14:26.930
+of where to take the value from.
+
+206
+00:14:26.930 --> 00:14:32.250
+And the control bit of this multiplexer
+is one of the bits in the instruction.
+
+207
+00:14:32.250 --> 00:14:36.960
+So, once again, the CPU designer
+has to take care to take this bit
+
+208
+00:14:36.960 --> 00:14:41.180
+that determines from which we want
+to read the input of the ALU.
+
+209
+00:14:41.180 --> 00:14:44.040
+And then the ALU will then
+get the correct inputs, or
+
+210
+00:14:44.040 --> 00:14:48.210
+the inputs that the programmer
+intended it to receive.
+
+211
+00:14:48.210 --> 00:14:53.280
+So we have the inputs lodged in
+the input spans of the ALU, and,
+
+212
+00:14:53.280 --> 00:14:57.100
+the ALU goes to work, and
+how does it know what to do?
+
+213
+00:14:57.100 --> 00:15:01.930
+Well, the ALU also has,
+six control bits that, basically,
+
+214
+00:15:01.930 --> 00:15:07.460
+taken together, tell or specify the ALU
+which operation we want to carry out.
+
+215
+00:15:07.460 --> 00:15:10.490
+Now, these bits are taken
+from the instruction, and
+
+216
+00:15:10.490 --> 00:15:16.440
+I'm using some color coding here to,
+to help distinguish which bits go where,
+
+217
+00:15:16.440 --> 00:15:19.260
+but of course these colors
+are completely meaningless as far as
+
+218
+00:15:19.260 --> 00:15:24.660
+the computer is concerned And
+I'm using them only for didactic purposes.
+
+219
+00:15:24.660 --> 00:15:30.000
+So the CPU designer has to
+take these six green bits or
+
+220
+00:15:30.000 --> 00:15:33.180
+more accurately copies of these bits and
+
+221
+00:15:33.180 --> 00:15:38.410
+root them all the way to
+the control bits of the ALU.
+
+222
+00:15:38.410 --> 00:15:43.010
+So now that we have all this information,
+we have, the input data.
+
+223
+00:15:43.010 --> 00:15:45.960
+We have the,
+operation that we have to carry out.
+
+224
+00:15:45.960 --> 00:15:49.640
+We can actually,
+you can actually compute something.
+
+225
+00:15:49.640 --> 00:15:51.699
+And out comes the ALU output.
+
+226
+00:15:51.699 --> 00:15:56.816
+Now, inspecting the diagram,
+we see that the ALU
+
+227
+00:15:56.816 --> 00:16:03.170
+output is simultaneously fed Into
+three different destinations.
+
+228
+00:16:03.170 --> 00:16:06.060
+The first destination is the D-register.
+
+229
+00:16:06.060 --> 00:16:11.701
+The second destination is the A-register
+and it goes through a multiplexer.
+
+230
+00:16:11.701 --> 00:16:16.717
+And the final destination is outside
+the interface or the chip, so to speak.
+
+231
+00:16:16.717 --> 00:16:21.703
+So the same ALU is fanned out
+into three different places and
+
+232
+00:16:21.703 --> 00:16:25.591
+so we have this situation that we have
+
+233
+00:16:25.591 --> 00:16:30.300
+the same ALU output knocking
+on three different doors.
+
+234
+00:16:30.300 --> 00:16:33.373
+But the first the fact that it
+knocks on these doors does not
+
+235
+00:16:33.373 --> 00:16:35.872
+necessarily mean that
+the doors are going to open.
+
+236
+00:16:35.872 --> 00:16:40.493
+We have to decide or the programmer has
+to decide, which door has to be opened.
+
+237
+00:16:40.493 --> 00:16:46.657
+This decision is made by the next field
+of bits that I want to focus on and
+
+238
+00:16:46.657 --> 00:16:51.464
+these are called in our jargon,
+we call them destination bits.
+
+239
+00:16:51.464 --> 00:16:56.597
+We have three destination bits and
+these bits determine whether or not to
+
+240
+00:16:56.597 --> 00:17:02.671
+open the D-register, the A-register and
+the data memory to accept the ALU output.
+
+241
+00:17:02.671 --> 00:17:06.934
+So, if for example,
+the green bytes would have been 000,
+
+242
+00:17:06.934 --> 00:17:12.052
+then it's very nice the ALU computes
+something, but this value would be lost.
+
+243
+00:17:12.052 --> 00:17:17.601
+No container in this computer will will
+be open for business, so to speak.
+
+244
+00:17:17.601 --> 00:17:20.353
+And if we set these green bits to 1111,
+
+245
+00:17:20.353 --> 00:17:25.716
+then all of the containers will receive
+the same output simultaneously.
+
+246
+00:17:25.716 --> 00:17:29.226
+So we can play with these bits as,
+as we've done
+
+247
+00:17:29.226 --> 00:17:33.612
+in week four when we wrote programs
+although we did it in assembly and
+
+248
+00:17:33.612 --> 00:17:36.804
+then symbolic way,
+we can do it with machine language.
+
+249
+00:17:36.804 --> 00:17:43.776
+And once again we have a way to program
+this architecture so that the ALU output,
+
+250
+00:17:43.776 --> 00:17:50.874
+output would be selectively absorbed by
+different locations in this architecture.
+
+251
+00:17:50.874 --> 00:17:51.536
+All right.
+
+252
+00:17:51.536 --> 00:17:57.025
+Moving along, another thing that we
+have to remember is that the ALU also
+
+253
+00:17:57.025 --> 00:18:03.342
+computes and outputs to control outputs,
+which I think we call the ZR and, and NG.
+
+254
+00:18:03.342 --> 00:18:07.778
+And these two control bits
+are document whether or
+
+255
+00:18:07.778 --> 00:18:11.272
+not the ALU output is negative or zero.
+
+256
+00:18:11.272 --> 00:18:16.500
+And these two outputs play a key
+role in what will be described next,
+
+257
+00:18:16.500 --> 00:18:19.817
+which is the control logic of the CPU.
+
+258
+00:18:19.817 --> 00:18:24.253
+But before we talk about this logic,
+I want to as promised,
+
+259
+00:18:24.253 --> 00:18:28.404
+I want to say a few words about
+the reset input that we see coming,
+
+260
+00:18:28.404 --> 00:18:33.448
+coming in to the diagram from the left
+hand side at the bottom of the slide.
+
+261
+00:18:33.448 --> 00:18:37.589
+And of course, when you build and
+shape all these sides, up, down, left,
+
+262
+00:18:37.589 --> 00:18:40.436
+right, mean absolutely nothing, but it's,
+
+263
+00:18:40.436 --> 00:18:44.796
+it's useful h, to communicate about
+it when we talk about gate diagrams.
+
+264
+00:18:44.796 --> 00:18:48.256
+So let us say a few words
+about this recent bit.
+
+265
+00:18:48.256 --> 00:18:51.829
+And in order to do it,
+we have to try to envision how
+
+266
+00:18:51.829 --> 00:18:56.616
+the heck computer will look like if
+we actually set out to build it.
+
+267
+00:18:56.616 --> 00:18:59.843
+Well, it will be a black box and
+as you see,
+
+268
+00:18:59.843 --> 00:19:04.265
+this black box is equipped with
+a single push down button.
+
+269
+00:19:04.265 --> 00:19:10.803
+And this push down button is
+called reset in our in our jargon.
+
+270
+00:19:10.803 --> 00:19:13.610
+And the idea is the following.
+
+271
+00:19:13.610 --> 00:19:18.595
+This black box, the hack, the head
+computer is already loaded with some
+
+272
+00:19:18.595 --> 00:19:23.925
+program written in Hack machine language
+and up until now, it does nothing.
+
+273
+00:19:23.925 --> 00:19:26.352
+The program is inside,
+but nothing is happening.
+
+274
+00:19:26.352 --> 00:19:31.680
+Well, if you take your finger and
+push this reset button in and let, let go,
+
+275
+00:19:31.680 --> 00:19:37.196
+what will happen is that the computer
+will start running the current program.
+
+276
+00:19:37.196 --> 00:19:40.125
+Well, you look at whatever
+comes out of this computer and
+
+277
+00:19:40.125 --> 00:19:44.961
+then in a few minutes you will see that we
+can attach a screen to it and a keyboard.
+
+278
+00:19:44.961 --> 00:19:48.359
+You look at the program's execution and
+at some point,
+
+279
+00:19:48.359 --> 00:19:52.636
+you decide to reset the computer or
+rerun the same program again.
+
+280
+00:19:52.636 --> 00:19:57.117
+You take your finger,
+you push it inside the the reset button.
+
+281
+00:19:57.117 --> 00:19:58.989
+You let go and by doing this,
+
+282
+00:19:58.989 --> 00:20:02.900
+the computer will restart
+running the same program again.
+
+283
+00:20:02.900 --> 00:20:05.673
+Okay?
+So this is the kind of behavior that we
+
+284
+00:20:05.673 --> 00:20:11.781
+want to implement in the in the control
+logic of the CPU, among other things.
+
+285
+00:20:11.781 --> 00:20:12.303
+All right.
+
+286
+00:20:12.303 --> 00:20:15.603
+So now that we understand how the reset
+
+287
+00:20:15.603 --> 00:20:19.873
+button works from the outside
+of the computer, so to speak.
+
+288
+00:20:19.873 --> 00:20:27.396
+Let's go back to the CPU logic and
+explore the control logic of the CPU.
+
+289
+00:20:27.396 --> 00:20:32.183
+Well it doesn't make sense to talk
+about control if we don't have some
+
+290
+00:20:32.183 --> 00:20:37.368
+instruction that that gives meaning
+to to the control operation.
+
+291
+00:20:37.368 --> 00:20:42.551
+So here is an example of a instruction and
+it's a schematic instruction,
+
+292
+00:20:42.551 --> 00:20:44.050
+it's not zeros and ones.
+
+293
+00:20:44.050 --> 00:20:47.704
+But they used some mnemonics to and
+also color coding,
+
+294
+00:20:47.704 --> 00:20:50.992
+which is completely meaningless
+as far as the computer goes.
+
+295
+00:20:50.992 --> 00:20:56.422
+I use these mnemonics and colors in
+order to emphasize that we have here,
+
+296
+00:20:56.422 --> 00:21:01.539
+here different fields of bits each
+field is designed to do something else
+
+297
+00:21:01.539 --> 00:21:04.238
+in the overall computer architecture.
+
+298
+00:21:04.238 --> 00:21:09.197
+And when we talk about control,
+I want you to focus on these 3 bits,
+
+299
+00:21:09.197 --> 00:21:11.642
+which we call the junk bits.
+
+300
+00:21:11.642 --> 00:21:18.061
+If you recall, if the three jump bits are
+zero, it represents a no jump situation.
+
+301
+00:21:18.061 --> 00:21:22.782
+If the three jump bits are one,
+it represents unconditional go to.
+
+302
+00:21:22.782 --> 00:21:25.158
+And any other combination of zeros and
+
+303
+00:21:25.158 --> 00:21:28.807
+ones in the jump bits
+represents a conditional go to.
+
+304
+00:21:28.807 --> 00:21:33.881
+What I've just said is part of the Hack
+machine language specification.
+
+305
+00:21:33.881 --> 00:21:39.015
+And now, it's the job of the CPU to
+turn this specification into reality,
+
+306
+00:21:39.015 --> 00:21:41.798
+to realize this obstruction.
+
+307
+00:21:41.798 --> 00:21:43.783
+So how do we do it?
+
+308
+00:21:43.783 --> 00:21:49.614
+Well, the hero of our story is a humble
+register called program counter,
+
+309
+00:21:49.614 --> 00:21:56.775
+it's actually a counter and the program
+counter is also called PC in our jargon.
+
+310
+00:21:56.775 --> 00:22:03.322
+And in what funnels, we want to
+focus on what happens inside the PC.
+
+311
+00:22:03.322 --> 00:22:09.034
+So here is the desired operation
+of a typical program counter.
+
+312
+00:22:09.034 --> 00:22:14.711
+First of all, and, an for most the one
+thing we want the program counter to
+
+313
+00:22:14.711 --> 00:22:20.494
+do is to always emit the address of the
+next instruction that has to be executed.
+
+314
+00:22:20.494 --> 00:22:22.177
+So let's keep this in mind.
+
+315
+00:22:22.177 --> 00:22:27.633
+Now, if you want to start or
+restart the computer.
+
+316
+00:22:27.633 --> 00:22:30.135
+Well, in this case,
+we have to set PC to zero,
+
+317
+00:22:30.135 --> 00:22:33.694
+because we want to execute the first
+instruction in the program.
+
+318
+00:22:33.694 --> 00:22:36.875
+So PC equals zero makes a lot of sense.
+
+319
+00:22:36.875 --> 00:22:42.154
+Otherwise, if we have a no jump situation,
+if the current
+
+320
+00:22:42.154 --> 00:22:47.237
+instruction is such that
+the three j bits are zero,
+
+321
+00:22:47.237 --> 00:22:52.939
+then we want the program counter
+to increment by one step.
+
+322
+00:22:52.939 --> 00:22:57.653
+So that the next instruction that we will
+execute will be instruction number one,
+
+323
+00:22:57.653 --> 00:23:00.864
+and then instruction number two and
+three and four and so
+
+324
+00:23:00.864 --> 00:23:02.866
+on as long as we don't have a jump.
+
+325
+00:23:02.866 --> 00:23:07.756
+However, if the current instruction
+is such that all the j bits are one,
+
+326
+00:23:07.756 --> 00:23:10.401
+then we have a conditional, I'm sorry.
+
+327
+00:23:10.401 --> 00:23:12.803
+We have an unconditional go to.
+
+328
+00:23:12.803 --> 00:23:17.204
+And in the case of an unconditional go to,
+we want to set the PC to A.
+
+329
+00:23:17.204 --> 00:23:17.900
+Why?
+
+330
+00:23:17.900 --> 00:23:19.644
+Because if the programmer,
+
+331
+00:23:19.644 --> 00:23:24.003
+if the programmer knows what he is doing,
+then the programmer has all,
+
+332
+00:23:24.003 --> 00:23:28.817
+already taken care to enter the address
+you want to jump to, to the A register.
+
+333
+00:23:28.817 --> 00:23:33.502
+So if we do PC equals A, PC,
+the program counter will emit
+
+334
+00:23:33.502 --> 00:23:37.792
+the address of the next instruction
+that has to be executed.
+
+335
+00:23:37.792 --> 00:23:41.937
+And finally, if only some of
+the j bits are, are, are one.
+
+336
+00:23:41.937 --> 00:23:47.277
+One or two of the j bits are one
+then we have a condition of go to.
+
+337
+00:23:47.277 --> 00:23:50.608
+If we have a conditional go to,
+we have to look at the ALU output and
+
+338
+00:23:50.608 --> 00:23:53.224
+decide if this go to should
+actually materialize.
+
+339
+00:23:53.224 --> 00:23:55.339
+That's the whole idea of conditional.
+
+340
+00:23:55.339 --> 00:23:57.858
+We have to check if
+the condition is true or false.
+
+341
+00:23:57.858 --> 00:24:01.644
+If the condition is true,
+Then, we want to make a jump.
+
+342
+00:24:01.644 --> 00:24:07.228
+Otherwise, we want to ignore the go to and
+just do PC++.
+
+343
+00:24:07.228 --> 00:24:11.906
+So, I hope that you are convinced
+that this abstraction makes sense,
+
+344
+00:24:11.906 --> 00:24:16.508
+that's exactly how a program counter
+has to work in every computer,
+
+345
+00:24:16.508 --> 00:24:22.010
+and, what remains to be seen is
+how do we actually make it happen?
+
+346
+00:24:22.010 --> 00:24:28.350
+Well, the answer is already,
+on the screen here in front of you, the,
+
+347
+00:24:28.350 --> 00:24:33.840
+logic architecture is such that the PC
+will do exactly what we want it to do.
+
+348
+00:24:33.840 --> 00:24:36.720
+And let us convince ourself
+that this is indeed the case.
+
+349
+00:24:37.870 --> 00:24:43.000
+Well, let's look at the, reset input,
+and remember that in order to
+
+350
+00:24:43.000 --> 00:24:47.930
+start the computer, in order to cause
+the computer to start, executing the kind,
+
+351
+00:24:47.930 --> 00:24:53.010
+the kind of program, we push
+the reset button in, and we let go.
+
+352
+00:24:53.010 --> 00:24:59.360
+So if PC, I'm sorry, if the register
+is one, we want to set PC to zero.
+
+353
+00:24:59.360 --> 00:25:02.050
+Otherwise, we have to look
+at the current instruction.
+
+354
+00:25:03.060 --> 00:25:06.710
+And the current instruction may or
+may not have, jump bits.
+
+355
+00:25:06.710 --> 00:25:10.100
+If the jump bits are.
+
+356
+00:25:11.100 --> 00:25:14.110
+Well, given any combination of jump bits,
+you know,
+
+357
+00:25:14.110 --> 00:25:16.526
+all the way from zero zero
+zero zero to one one one and
+
+358
+00:25:16.526 --> 00:25:21.540
+all the possible eight combinations
+of three, of three, jump bits.
+
+359
+00:25:21.540 --> 00:25:26.600
+Given every one of these combinations,
+we have to look at the jump bits and
+
+360
+00:25:26.600 --> 00:25:28.980
+simultaneously look at the ALU output.
+
+361
+00:25:28.980 --> 00:25:33.680
+And decide if we really
+want to carry out the jump.
+
+362
+00:25:33.680 --> 00:25:38.420
+So, in the slide I describe this,
+decision as a function.
+
+363
+00:25:38.420 --> 00:25:40.340
+This f function which I made up.
+
+364
+00:25:40.340 --> 00:25:44.240
+Completely meaningless in the computer,
+architecture.
+
+365
+00:25:44.240 --> 00:25:46.910
+But, I'm using this, symbol f to
+
+366
+00:25:48.370 --> 00:25:52.240
+to try to say that we look at these
+two different pieces of data together.
+
+367
+00:25:52.240 --> 00:25:56.380
+We combine somehow, this information,
+and we make a decision.
+
+368
+00:25:56.380 --> 00:25:57.830
+Do we want to jump or not?
+
+369
+00:25:58.850 --> 00:26:02.580
+I store the result of this
+decision in the symbol load.
+
+370
+00:26:03.730 --> 00:26:05.050
+And if you look at the diagram,
+
+371
+00:26:05.050 --> 00:26:10.130
+you can see that this load is actually
+the load bit of the program counter.
+
+372
+00:26:10.130 --> 00:26:14.270
+So if load ends up being one,
+yes, we want to jump.
+
+373
+00:26:14.270 --> 00:26:16.140
+So we PC equals A.
+
+374
+00:26:16.140 --> 00:26:17.710
+PC equals.
+
+375
+00:26:17.710 --> 00:26:19.189
+The current,
+
+376
+00:26:19.189 --> 00:26:23.630
+value on the register which contains
+the address to which we want to jump.
+
+377
+00:26:23.630 --> 00:26:25.970
+Otherwise we do PC pass pass.
+
+378
+00:26:25.970 --> 00:26:28.690
+At the end of all this operation and
+
+379
+00:26:28.690 --> 00:26:33.890
+all the dust clears what we'll
+get is that the PC always
+
+380
+00:26:33.890 --> 00:26:38.890
+emits the address of the next instruction
+that has to be fetched and executed.
+
+381
+00:26:40.350 --> 00:26:47.060
+This, pretty much raps up the,
+the description of the CPU implementation,
+
+382
+00:26:47.060 --> 00:26:51.080
+and the only thing that remains
+to do is to actually build it.
+
+383
+00:26:51.080 --> 00:26:56.490
+But before we set out to build it, we
+have to remember that all this complexity
+
+384
+00:26:56.490 --> 00:27:01.020
+is just one element in the overall
+computer architecture.
+
+385
+00:27:01.020 --> 00:27:01.610
+That said,
+
+386
+00:27:01.610 --> 00:27:06.010
+it is by far the most complex and
+interesting element in the architecture.
+
+387
+00:27:06.010 --> 00:27:08.200
+And, we're going to build it.
+
+388
+00:27:08.200 --> 00:27:11.190
+Not now, but, after the next unit.
+
+389
+00:27:11.190 --> 00:27:13.409
+Because in the next unit,
+we'll describe the overall,
+
+390
+00:27:14.930 --> 00:27:18.870
+architecture of the Hack computer,
+and then we'll get our hands dirty and
+
+391
+00:27:18.870 --> 00:27:23.930
+actually set out to build both the CPU and
+the entire Hack computer.

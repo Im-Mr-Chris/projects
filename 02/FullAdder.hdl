@@ -1,0 +1,16 @@
+// File name: projects/02/FullAdder.hdl
+
+/**
+ * Computes the sum of three bits.
+ */
+
+CHIP FullAdder {
+    IN a, b, c;  
+    OUT sum,     
+        carry;  
+
+PARTS:
+    HalfAdder(a=a, b=b,  sum=s1, carry=c1);   
+    HalfAdder(a=c, b=s1, sum=sum, carry=c2);
+    Or(a=c1, b=c2, out=carry);
+}

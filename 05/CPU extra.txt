@@ -1,0 +1,148 @@
+
+/* 
+Instruction bits description for the C-instruction
+15 - op code
+14 - Not used
+13 - Not used
+
+bit - specifies second ALU input (M or A)
+12 - a bit (0 - ARegister, 1 - Memory)
+
+ALU control bits
+11 - zx
+10 - nx
+9  - zy
+8  - ny
+7  - f
+6  - no
+
+Dest bits
+5 - A Register
+4 - D Register
+3 - Memory
+
+Jump bits
+2 - LESS
+1 - EQUAL
+0 - GREATER
+
+0 - Instruction fetch
+    MemRead
+    ALUSrc A = 0
+    LorD = 0
+    IRWrite
+    ALUSrcB = 01
+    ALUOp = 00
+    PCWrite
+    PCSource = 00
+1 - Instruction Decode/ Register fetch
+    ALUSrcA = 0
+    ALUSrcB = 11
+    ALUOp = 00
+2 - Memory Address computation
+    ALUSrcA = 1
+    ALUSrcB = 10
+    ALUOp = 00
+3 - Memory Access
+    MemRead
+    lorD = 1
+4 - Write-back step
+    RegDst = 0
+    RegWrite
+    MemoReg = 1
+5 - Memory Access
+    MemWrite
+    lorD = 1
+6 - Execution
+    ALUSrcA = 1
+    ALUSrcB = 00
+    ALUOp = 10
+7 - R-Type Completion
+    RegGst = 1
+    RegWrite
+    MemtoReg = 0
+8 - Branch Completion
+    ALUSrcA = 1
+    ALUSrcB = 00
+    ALUOp = 01
+    PCWriteCond
+    PCSource = 01
+9 - Jump Completion
+    PCWtire
+    PCSource = 10
+
+
+/* 
+Instruction bits description for the C-instruction
+15 - op code
+14 - Not used
+13 - Not used
+
+* a bit - specifies second ALU input (M or A)
+12 - a bit (0 - ARegister, 1 - Memory)
+
+* ALU control bits
+11 - zx
+10 - nx
+9  - zy
+8  - ny
+7  - f
+6  - no
+
+* Dest bits
+5 - A Register
+4 - D Register
+3 - Memory
+
+* Jump bits
+2 - LESS
+1 - EQUAL
+0 - GREATER
+
+0 - Instruction fetch
+    MemRead
+    ALUSrc A = 0
+    LorD = 0
+    IRWrite
+    ALUSrcB = 01
+    ALUOp = 00
+    PCWrite
+    PCSource = 00
+1 - Instruction Decode/ Register fetch
+    ALUSrcA = 0
+    ALUSrcB = 11
+    ALUOp = 00
+2 - Memory Address computation
+    ALUSrcA = 1
+    ALUSrcB = 10
+    ALUOp = 00
+3 - Memory Access
+    MemRead
+    lorD = 1
+4 - Write-back step
+    RegDst = 0
+    RegWrite
+    MemoReg = 1
+5 - Memory Access
+    MemWrite
+    lorD = 1
+6 - Execution
+    ALUSrcA = 1
+    ALUSrcB = 00
+    ALUOp = 10
+7 - R-Type Completion
+    RegGst = 1
+    RegWrite
+    MemtoReg = 0
+8 - Branch Completion
+    ALUSrcA = 1
+    ALUSrcB = 00
+    ALUOp = 01
+    PCWriteCond
+    PCSource = 01
+9 - Jump Completion
+    PCWtire
+    PCSource = 10
+
+
+

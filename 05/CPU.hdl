@@ -1,0 +1,91 @@
+// File name: projects/05/CPU.hdl
+
+CHIP CPU {
+IN  inM[16],         // M value input  (M = contents of RAM[A])
+    instruction[16], // Instruction for execution
+    reset;           // Signals whether to re-start the current
+                     // program (reset==1) or continue executing
+                     // the current program (reset==0).
+OUT outM[16],        // M value output
+    writeM,          // Write to M? 
+    addressM[15],    // Address in data memory (of M)
+    pc[15];          // address of next instruction
+
+PARTS:
+
+    Not(in = instruction[15], out = AInst);
+    Not(in = AInst, out = CInst);
+
+// A-Register
+    And(a=CInst, b=instruction[5], out=EvalA);
+    Mux16(a=instruction, b=alu, sel=instruction[15], out=newa);
+    Or(a=AInst, b=EvalA, out=LoadA);
+    ARegister(in=newa, load=LoadA, out=a);
+
+// D-Register
+    And(a=instruction[4], b=CInst, out=LoadD);
+    DRegister(in=alu, load=LoadD, out=d);
+
+// ALU
+    Mux16(a=a, b=inM, sel=instruction[12], out=aorm);
+    And(a=instruction[11], b=true, out=zx);
+    And(a=instruction[10], b=true, out=nx);
+    And(a=instruction[9], b=true, out=zy);
+    And(a=instruction[8], b=true, out=ny);
+    And(a=instruction[7], b=true, out=f);
+    And(a=instruction[6], b=true, out=no);
+    ALU(x=d, y=aorm, zx=zx, nx=nx, zy=zy, ny=ny, f=f, no=no, out=alu, zr=zr, ng=ng);
+
+// Should Jump?
+    Not(in=zr, out=nzr);
+    Not(in=ng, out=nng);
+    And(a=nzr, b=nng, out=pos);
+    And(a=instruction[2], b=ng, out=jlt);
+    And(a=instruction[1], b=zr, out=jz);
+    And(a=instruction[0], b=pos, out=jpos);
+    Or(a=jlt, b=jz, out=jltz);
+    Or(a=jltz, b=jpos, out=jumpcondition);
+    And(a=CInst, b=jumpcondition, out=shouldjump);
+
+// writeM
+    And(a=CInst, b=instruction[3], out=writeM);
+
+// addressM
+    And16(a=a, b=true, out[0..14]=addressM);
+
+// outM
+    And16(a=alu, b=true, out=outM);
+
+// PC 
+    PC(in=a, load=shouldjump, inc=true, reset=reset, out[0..14]=pc);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

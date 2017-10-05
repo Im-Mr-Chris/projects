@@ -1,0 +1,311 @@
+The central processing unit,
+also called the CPU, is the centerpiece of every
+computer hardware architecture. It is the hub of computation, if you will, because this is where all the calculations
+of the machine take place. And it is also the seat of control. This is where decisions are made about
+which instruction should be fetched and executed next. In this unit,
+we're going to talk about the Hack CPU, the specification of the, of the CPU, and
+how we actually are going to build it. Now, as usual, it always pays off
+to start with the abstraction. So we can think about the Hack CPU
+as some sort of a black box magic that performs two truly remarkable things. First of all, well, it's a 16-bit
+processor, like, the entire computer. And the first thing that it can do is,
+given a certain instruction, written in the Hack language,
+it will execute this instruction. Now, this is something which in my
+opinion is truly remarkable and dramatic. Because up until this point,
+when you wrote programs, the programs existed on a piece of paper,
+they were completely static, they were simply a bunch of symbols
+that described some fantasy of the programmer who wants to
+actually make something happen. But now,
+we can actually take these programs and put it into a machine that
+turns them into reality. The programs become music
+that you can listen to or video clips that you can watch. Or some airline reservation system or
+whatever. So the CPU is this very unique and
+special agent that takes this program specification and
+turns it into a reality. And if this were not
+enough in its own right, the CPU can also do something
+not less remarkable. In the process of executing the current
+instruction, it also figures out somehow which instruction should be executed next
+in the program which is currently running. And, of course, since we talk about
+the Hack computer, we assume all these programs are written in the Hack
+machine language that we studied or looked at in, in week four. So given that this is the CPU's
+abstraction, the next thing that I'd like to discuss is the more detailed
+specification of this apparatus. Well, the first thing that we have to
+remember is that the CPU does not work in isolation. It is connected to other
+devices Inside the computer. In particular,
+in this particular Hack architecture, the CPU is connected both to the
+instruction memory and to the data memory. With that in mind, here is the specific
+input and output connections of the CPU. And let us begin to review them from
+left to right and from top to bottom. So, first of all, we have three inputs coming from
+three completely different sources. First of all,
+there is the 16-bit data value, which is the value of the currently
+selected data memory register. This is the value that the CPU
+is going to operate on. Now, what exactly do
+we want the CPU to do? Well, the next input,
+which we decided to call instruction, which is a very sensible name,
+describes a 16 bit input which is the value of the selected
+instruction memory register. And remember that at any
+given point of time, there is always a selected register
+in the instruction memory, and there is always a selected memory
+register in the data memory. So always something comes into the CPU. The third input,
+which we decided to call the reset, is a one bit input which I will
+discuss later in this unit. On the right hand side,
+we see the outputs of the ALU. So, first of all, if the ALU wants to
+write something to the data memory, it has to specify three different things. Number one,
+what is it that we want to write. And this is stored in or
+admitted through an output called outM. Number two, where do we want to write it. We have to provide an address, and this
+is the the job of the next data output. And, the third output is a load bit
+that enables the data memory for write operations. So these are the three data outputs,
+if you will, of the CPU. In addition,
+there's one extremely important output, which we decided to call PC for reasons
+that will become clear in a few minutes. And this output holds, by some sort of
+magic, the address of the next instruction that has to be fetched and executed
+in the next cycle of this computer. So how do we implement this magic? How do we make all these
+good things actually happen? Well, here is one way of doing it. This is our proposed implementation of
+the functionality that we just described. It is not the only way to build a CPU,
+but this is a, a pretty good one, because it's very elegant and
+simple and relatively easy to do. So before we get into the actual
+details of this architecture, let us look at the interface. If we look at the interface
+of this hardware diagram, we see that it is 100% identical
+to what we saw before. We have three inputs coming in and
+we have four outputs coming out. And, given that we made this observation, we can now delve into the details
+of the actual architecture. Another important thing that we have to
+look at before we begin to understand before we begin to understand what is
+going on here, is that within this architecture, we have many labels,
+labeled by the catch all symbol C, which I use to represent
+the notion of control bits. So in order to make all
+these chips work together, the designer of the CPU has to
+make sure the different bits, different control bits, arrive to
+the right locations, and these multiple messages together will cause the CPU to do
+what it's what it's supposed to be doing. Now, if you look at this architecture,
+you know, after the first minute or two of bewilderment, you will realize that
+everything here is extremely standard. You see the LU,
+which you built in in project two. We see three registers, which we call A,
+D and [COUGH] and PC, and these registers are identicals to chips
+that you built in in project three. And we see two muxes, which we built in in
+week one of the course, in project one. And therefore, putting together this
+architecture is just a matter of assembling chip parts that you already
+built in previous weeks in this course. Another thing that you see in this
+diagram is all these C labels, which indicate control bits that go
+into various locations in various chips. Now, we have intentionally left those the specification of these
+control bits somewhat opaque, because we want you to figure out how to
+actually piece all these things together. And we'll have much more to
+say about it in the unit that discusses how we actually
+build this architecture. Now, before we build it, we have to describe what this
+architecture actually does. And in doing so I find it kind of, interesting to think about this
+architecture as an orchestra. An orchestra that works together, many
+different instruments in order to produce some great symphony and the symphony is
+the execution of the current program. You know, just like a regular orchestra, it can, it can play many
+different pieces of music. And the current program determines
+what it actually executes. So I would like in the remainder
+of this unit to focus on different sections in this architecture. And let us begin with this section that
+deals with the current instruction. So zooming in on this section,
+we see that it consists, mainly of, a register called A. And an instruction input that connects
+to this register through a multiplexer. And here is,
+an A instruction arriving to the, machine in the current cycle or
+some cycle. And here is also the symbolic mnemonic
+of the same instruction which is easier to read but obviously the computer
+doesn't care about it all this is just for communications between me and you. So we see that this instruction seeks to
+load the value 3,001 into a register. And of course, to do everything in binary. So in order to carry out this instruction,
+the CPU has to do several things. First of all,
+it has to decode the instruction. It has to take the 16-bit value and separate it into an op-code and
+a 15-bit address or a 15-bit value. By the way,
+how do we know that it's an A instruction? Well, we can look at the op-code. The op-code is zero, and according to
+the heck machine language specification it means that it's an A-instruction. So the CPU says, aha,
+I know what to do with it. I have to take the next 15-bit,
+value and put it inside the A register. And notice that this is exactly what the,
+the gate diagram does. The the 16 bit values go through
+the register and, and into the register. Another thing that the CPU does and we can not see it in this diagram
+in order to avoid clutter. But this is something very simple. It takes the output of the A-register and
+admits it outside the [COUGH] the CPU via the output which
+we call I think address M or M address. You can look it up in the overall
+architecture of the computer. So this is how the CPU
+handles an A instruction. Now the next thing that we
+are going to look at is how the CPU handles a C instruction
+because after all in this, hack machine language we have
+two generic instruction types. An A instruction and a C instruction. So we have to be able to entertain and
+handle any one of these instructions. Well the C-instruction, like the A-instruction,
+consists of different fields. And the first field is the op-code
+which happens to be one. This is how the CPU can tell
+that this is a C-instruction. But in addition to this,
+we have several other fields. And we can see them, we can see them more, more clearly if we look at the symbolic
+manifestation of the same instruction. Now notice that I'm using the color coding
+to associate the bits with the symbolic mnemonics but these colors obviously are
+completely meaningless for the computer. They are just a way for us to,
+to communicate more easily in the course. So how does the CPU handle
+with such an instruction? Well, you may have guessed the first
+thing that needs to be done is to decode the instruction.So the ALU takes this, 16 bit value and
+it decodes it into four different fields. And these fields will later on be used,
+in order to, power up and manipulate different elements
+inside the computer architecture. What we discussed so far was how, the CPU handles the instruction, but
+if you look at the gate diagram, you'll see that the same
+A register can be also fed, not necessarily from the instruction
+input, but rather from the ALU output. So we have to decide in some cases we
+want the A register to be fed from the instruction and in other cases we want
+the area to be fed from the ALU output. No you may have guessed how we do it. We know that in different situations we
+deal with two different constructions, in some cases its an A instruction
+with a op-code of 0, and in this case we want the input
+to come from the instruction. In other cases its C instruction,
+with an op-code of 1, and in this case we want to,
+to route the input of the A, A register in such a way that
+the input will come from the ALU. So it is the job of the CPU,
+designer to inspect the op-code of the incoming instruction
+and decide from which source the A register will take it's
+it's next contents so to speak. Alright, so this is roughly how the CPU
+handles incoming instructions and let's go back to the overall
+architecture and focus on the next section that I would like to
+discuss which is the operation of the ALU, which is by far the most, complex,
+part of this architecture. All right. Now, we see here, this, segment,
+that deals with the ALU, and we see a C instruction coming in, instead
+of the instruction that we saw before. And let us remember that the C instruction
+consists of different fields of bits, each one of which means something else. And another thing that we have to remember
+is that the ALU is a combinational chip. It always computes something,
+there's always some inputs coming in and there's always some output coming out. And when you look at the, diagram you see that the inputs of
+the ALU come from two different sources. One of them is the D register,
+the current value of the D register and the other one is either
+the value of the A register or the value of the selected memory,
+memory register. And there is a multiplexer that
+takes care of this decision of where to take the value from. And the control bit of this multiplexer
+is one of the bits in the instruction. So, once again, the CPU designer
+has to take care to take this bit that determines from which we want
+to read the input of the ALU. And then the ALU will then
+get the correct inputs, or the inputs that the programmer
+intended it to receive. So we have the inputs lodged in
+the input spans of the ALU, and, the ALU goes to work, and
+how does it know what to do? Well, the ALU also has,
+six control bits that, basically, taken together, tell or specify the ALU
+which operation we want to carry out. Now, these bits are taken
+from the instruction, and I'm using some color coding here to,
+to help distinguish which bits go where, but of course these colors
+are completely meaningless as far as the computer is concerned And
+I'm using them only for didactic purposes. So the CPU designer has to
+take these six green bits or more accurately copies of these bits and root them all the way to
+the control bits of the ALU. So now that we have all this information,
+we have, the input data. We have the,
+operation that we have to carry out. We can actually,
+you can actually compute something. And out comes the ALU output. Now, inspecting the diagram,
+we see that the ALU output is simultaneously fed Into
+three different destinations. The first destination is the D-register. The second destination is the A-register
+and it goes through a multiplexer. And the final destination is outside
+the interface or the chip, so to speak. So the same ALU is fanned out
+into three different places and so we have this situation that we have the same ALU output knocking
+on three different doors. But the first the fact that it
+knocks on these doors does not necessarily mean that
+the doors are going to open. We have to decide or the programmer has
+to decide, which door has to be opened. This decision is made by the next field
+of bits that I want to focus on and these are called in our jargon,
+we call them destination bits. We have three destination bits and
+these bits determine whether or not to open the D-register, the A-register and
+the data memory to accept the ALU output. So, if for example,
+the green bytes would have been 000, then it's very nice the ALU computes
+something, but this value would be lost. No container in this computer will will
+be open for business, so to speak. And if we set these green bits to 1111, then all of the containers will receive
+the same output simultaneously. So we can play with these bits as,
+as we've done in week four when we wrote programs
+although we did it in assembly and then symbolic way,
+we can do it with machine language. And once again we have a way to program
+this architecture so that the ALU output, output would be selectively absorbed by
+different locations in this architecture. All right. Moving along, another thing that we
+have to remember is that the ALU also computes and outputs to control outputs,
+which I think we call the ZR and, and NG. And these two control bits
+are document whether or not the ALU output is negative or zero. And these two outputs play a key
+role in what will be described next, which is the control logic of the CPU. But before we talk about this logic,
+I want to as promised, I want to say a few words about
+the reset input that we see coming, coming in to the diagram from the left
+hand side at the bottom of the slide. And of course, when you build and
+shape all these sides, up, down, left, right, mean absolutely nothing, but it's, it's useful h, to communicate about
+it when we talk about gate diagrams. So let us say a few words
+about this recent bit. And in order to do it,
+we have to try to envision how the heck computer will look like if
+we actually set out to build it. Well, it will be a black box and
+as you see, this black box is equipped with
+a single push down button. And this push down button is
+called reset in our in our jargon. And the idea is the following. This black box, the hack, the head
+computer is already loaded with some program written in Hack machine language
+and up until now, it does nothing. The program is inside,
+but nothing is happening. Well, if you take your finger and
+push this reset button in and let, let go, what will happen is that the computer
+will start running the current program. Well, you look at whatever
+comes out of this computer and then in a few minutes you will see that we
+can attach a screen to it and a keyboard. You look at the program's execution and
+at some point, you decide to reset the computer or
+rerun the same program again. You take your finger,
+you push it inside the the reset button. You let go and by doing this, the computer will restart
+running the same program again. Okay?
+So this is the kind of behavior that we want to implement in the in the control
+logic of the CPU, among other things. All right. So now that we understand how the reset button works from the outside
+of the computer, so to speak. Let's go back to the CPU logic and
+explore the control logic of the CPU. Well it doesn't make sense to talk
+about control if we don't have some instruction that that gives meaning
+to to the control operation. So here is an example of a instruction and
+it's a schematic instruction, it's not zeros and ones. But they used some mnemonics to and
+also color coding, which is completely meaningless
+as far as the computer goes. I use these mnemonics and colors in
+order to emphasize that we have here, here different fields of bits each
+field is designed to do something else in the overall computer architecture. And when we talk about control,
+I want you to focus on these 3 bits, which we call the junk bits. If you recall, if the three jump bits are
+zero, it represents a no jump situation. If the three jump bits are one,
+it represents unconditional go to. And any other combination of zeros and ones in the jump bits
+represents a conditional go to. What I've just said is part of the Hack
+machine language specification. And now, it's the job of the CPU to
+turn this specification into reality, to realize this obstruction. So how do we do it? Well, the hero of our story is a humble
+register called program counter, it's actually a counter and the program
+counter is also called PC in our jargon. And in what funnels, we want to
+focus on what happens inside the PC. So here is the desired operation
+of a typical program counter. First of all, and, an for most the one
+thing we want the program counter to do is to always emit the address of the
+next instruction that has to be executed. So let's keep this in mind. Now, if you want to start or
+restart the computer. Well, in this case,
+we have to set PC to zero, because we want to execute the first
+instruction in the program. So PC equals zero makes a lot of sense. Otherwise, if we have a no jump situation,
+if the current instruction is such that
+the three j bits are zero, then we want the program counter
+to increment by one step. So that the next instruction that we will
+execute will be instruction number one, and then instruction number two and
+three and four and so on as long as we don't have a jump. However, if the current instruction
+is such that all the j bits are one, then we have a conditional, I'm sorry. We have an unconditional go to. And in the case of an unconditional go to,
+we want to set the PC to A. Why? Because if the programmer, if the programmer knows what he is doing,
+then the programmer has all, already taken care to enter the address
+you want to jump to, to the A register. So if we do PC equals A, PC,
+the program counter will emit the address of the next instruction
+that has to be executed. And finally, if only some of
+the j bits are, are, are one. One or two of the j bits are one
+then we have a condition of go to. If we have a conditional go to,
+we have to look at the ALU output and decide if this go to should
+actually materialize. That's the whole idea of conditional. We have to check if
+the condition is true or false. If the condition is true,
+Then, we want to make a jump. Otherwise, we want to ignore the go to and
+just do PC++. So, I hope that you are convinced
+that this abstraction makes sense, that's exactly how a program counter
+has to work in every computer, and, what remains to be seen is
+how do we actually make it happen? Well, the answer is already,
+on the screen here in front of you, the, logic architecture is such that the PC
+will do exactly what we want it to do. And let us convince ourself
+that this is indeed the case. Well, let's look at the, reset input,
+and remember that in order to start the computer, in order to cause
+the computer to start, executing the kind, the kind of program, we push
+the reset button in, and we let go. So if PC, I'm sorry, if the register
+is one, we want to set PC to zero. Otherwise, we have to look
+at the current instruction. And the current instruction may or
+may not have, jump bits. If the jump bits are. Well, given any combination of jump bits,
+you know, all the way from zero zero
+zero zero to one one one and all the possible eight combinations
+of three, of three, jump bits. Given every one of these combinations,
+we have to look at the jump bits and simultaneously look at the ALU output. And decide if we really
+want to carry out the jump. So, in the slide I describe this,
+decision as a function. This f function which I made up. Completely meaningless in the computer,
+architecture. But, I'm using this, symbol f to to try to say that we look at these
+two different pieces of data together. We combine somehow, this information,
+and we make a decision. Do we want to jump or not? I store the result of this
+decision in the symbol load. And if you look at the diagram, you can see that this load is actually
+the load bit of the program counter. So if load ends up being one,
+yes, we want to jump. So we PC equals A. PC equals. The current, value on the register which contains
+the address to which we want to jump. Otherwise we do PC pass pass. At the end of all this operation and all the dust clears what we'll
+get is that the PC always emits the address of the next instruction
+that has to be fetched and executed. This, pretty much raps up the,
+the description of the CPU implementation, and the only thing that remains
+to do is to actually build it. But before we set out to build it, we
+have to remember that all this complexity is just one element in the overall
+computer architecture. That said, it is by far the most complex and
+interesting element in the architecture. And, we're going to build it. Not now, but, after the next unit. Because in the next unit,
+we'll describe the overall, architecture of the Hack computer,
+and then we'll get our hands dirty and actually set out to build both the CPU and
+the entire Hack computer.
